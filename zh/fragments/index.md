@@ -3,6 +3,12 @@ layout: page
 title: 片段
 description: 个人数字剪贴簿，记录照片、近况、短想法、收藏和未成熟的实验。
 fragments:
+  - id: three-leverages
+    date: 2026-07-26
+    type: 简短想法
+    title: 三种杠杆
+    text: 杠杆有三种，即资金杠杆、关系杠杆和精神杠杆。选择高于努力，机会成本来自选择，选择来自认知，认知来自专注力。用专注力发现机会并作出正确选择，这就是精神杠杆转化为财富的成功之道。
+    tags: [杠杆, 选择, 认知, 专注力]
   - id: learning-through-output
     date: 2026-07-20
     type: 简短想法
