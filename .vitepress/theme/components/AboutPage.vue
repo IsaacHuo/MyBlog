@@ -207,7 +207,7 @@ const featuredProjects = computed(() => isZh
   ? [
       {
         title: 'MyLeafy',
-        description: '通用型校园 iOS 应用',
+        description: '以课表为核心的校园 iOS 应用',
         url: '/zh/projects/leafy'
       },
       {
@@ -219,7 +219,7 @@ const featuredProjects = computed(() => isZh
   : [
       {
         title: 'MyLeafy',
-        description: 'A general-purpose campus iOS app',
+        description: 'A timetable-centered campus iOS app',
         url: '/en/projects/leafy'
       },
       {

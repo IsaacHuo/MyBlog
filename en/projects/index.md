@@ -3,7 +3,7 @@ layout: ProjectsPage
 title: Projects
 thoughts:
   - title: "MyLeafy"
-    description: "A general-purpose campus iOS app, first launched at Beijing Forestry University. Integrates timetables, grades, community, and campus tools — independently built from design to backend, now serving 5,000+ users."
+    description: "A native iOS app for university study and campus life, currently focused on Beijing Forestry University. It connects academic data, community, and campus tools around the timetable, with the client, backend, and operations console built independently for 5,000+ users."
     url: /en/projects/leafy
     date: 2026-07-01
     image: /project-images/leafy.png

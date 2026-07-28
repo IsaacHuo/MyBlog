@@ -1,15 +1,17 @@
 ---
-title: "MyLeafy: General-Purpose Campus iOS App"
+title: "MyLeafy: A Timetable-Centered Campus iOS App"
 date: 2026-07-01
 author: Isaac Huo
-description: "A general-purpose campus iOS app whose first supported campus is Beijing Forestry University, centered on timetables, academic data, community features, course evaluation, and student tools."
+description: "A native iOS app for university study and campus life, currently focused on Beijing Forestry University and centered on timetables and academic data."
 editLink: true
 outline: [2, 3]
 ---
 
-# MyLeafy: General-Purpose Campus iOS App
+# MyLeafy: A Timetable-Centered Campus iOS App
 
-MyLeafy is a general-purpose campus iOS app I built for student-facing academic and campus workflows. The internal code name, target, and some type names still use `Leafy`, but the public product name has been updated to MyLeafy. The first supported campus is Beijing Forestry University, where the academic connector talks directly to the university's Zhengfang academic system.
+MyLeafy is a campus iOS app I built independently, currently focused on Beijing Forestry University. It starts with the timetable and brings grades, exams, degree requirements, empty classrooms, learning records, campus community, and timetable sharing into one native client. I built the iOS app, Supabase backend, public website, and operations console, and the product now serves more than 5,000 users.
+
+The repository, Xcode target, and some historical types still use `leafy` or `Leafy`; the public product name is MyLeafy. The project now has campus capability configuration, while its complete academic-system integration remains focused on Beijing Forestry University.
 
 <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; align-items: flex-start;">
   <img src="/project-images/myleafy/calendar.jpg" alt="MyLeafy timetable showcase" width="220" loading="lazy" style="max-width: 100%; border-radius: 16px;">
@@ -21,34 +23,64 @@ MyLeafy is a general-purpose campus iOS app I built for student-facing academic 
   <img src="/project-images/myleafy/color.jpg" alt="MyLeafy theme color showcase" width="220" loading="lazy" style="max-width: 100%; border-radius: 16px;">
 </div>
 
-## Product Scope
+## Product Structure
 
-The goal of MyLeafy is to reorganize high-frequency campus information into a better mobile experience. The timetable is the main entry point, with grades, exams, teaching plans, empty classrooms, calendars, community features, notifications, feedback, and course evaluation available from there.
+The current public build has four root tabs:
 
-The system boundary is intentionally clear: the student ID and the school's academic system remain the source of academic identity and academic data, while Supabase handles non-academic services such as profiles, posts, comments, likes, notifications, announcements, feedback, teacher ratings, and shared timetable snapshots.
+- **Timetable** covers the full-semester weekly grid, course details, notes, reminders, exams, schedules, backgrounds, sharing, and widgets.
+- **Community** covers posts, media and documents, comments, likes, bookmarks, polls, notifications, announcements, reporting, and blocking.
+- **Campus** groups grades, exams, degree requirements, empty classrooms, learning spaces, sports, career planning, graduate-school information, and structured ratings.
+- **Profile** manages community identity, personal content, shared timetables, appearance, display settings, data, support, and logout.
 
-## Implemented Features
+The timetable is the highest-frequency entry point. Campus tools are grouped by task so the root navigation stays compact as the product grows.
 
-The app is organized around three root tabs:
+Leafy AI remains in the source, backend, and product configuration. Its public navigation and purchase flow are hidden in version 2.9 build 22 while the current release focuses on free features, stability, and review compliance.
 
-- **Timetable**: weekly view, week switching, course detail sheets, today's summary, single-day timetable sharing, and weather information.
-- **Discover**: grades, exams, teaching plans, empty classrooms, calendar, community, notifications, and course evaluation.
-- **Profile**: community profile, personal content, favorites, shared timetables, theme settings, feedback, and logout.
+## Data Boundaries
 
-The academic-service side supports student ID/password/captcha login, explicit cookie session management, timetable/grade/exam/teaching-plan scraping and parsing, and SwiftData caching. The timetable flow also keeps a WKWebView fallback to handle academic-system redirects and page-structure changes.
+The university academic system remains the authority for timetables, grades, exams, teaching plans, degree requirements, and classroom availability. MyLeafy reads this data after the user signs in and keeps the latest successful local cache.
 
-The community side is built on Supabase, with anonymous sessions bound to student IDs, profile persistence, text/image posts, comments, likes, notifications, announcements, feedback, teacher lists, star ratings, and one-way shared timetable authorization.
+Personal notes, reminders, learning materials, tasks, and fitness records stay in SwiftData or the app's private files by default. Supabase stores MyLeafy's own multi-user data, including community content, notifications, announcements, timetable-sharing permissions, ratings, and runtime configuration. Access is constrained by user sessions, row-level security, campus scope, and resource ownership.
 
-## Technical Implementation
+Shared timetables contain only the fields a user explicitly publishes. A local timetable cache never becomes public automatically.
 
-MyLeafy is built with SwiftUI and targets iOS 17. Local persistence uses SwiftData. School network requests use URLSession and HTTPCookieStorage, while HTML parsing is handled by SwiftSoup. Non-academic services are backed by Supabase Auth, Database, Storage, and Edge Functions.
+## Timetable and Time
 
-The project also includes a React + Vite + TypeScript admin console for community metrics, posts, comments, users, feedback, announcements, teachers, and rating management. High-privilege operations go through Supabase Edge Functions instead of exposing management privileges directly to the frontend.
+The Beijing Forestry University academic system exposes HTML pages rather than a stable API. MyLeafy uses URLSession, explicit cookie management, and SwiftSoup for access and parsing, with WKWebView available when the browser path must be reproduced.
 
-## What I Learned
+The timetable keeps a fixed 20-week container, while actual course occurrences come entirely from the university response. Runtime configuration supplies semester query parameters and the first-week date, so an ordinary semester rollover does not require an App Store release.
 
-MyLeafy forced me to handle the messy parts of real campus systems: captcha login, cookie sessions, changing HTML structures, mobile caching, readable parse-failure states, community data permissions, and admin boundaries. It also moved me from implementing isolated features toward owning a fuller product path: data source, client experience, backend permissions, operations console, and TestFlight readiness.
+The interface supports week switching, overlapping courses, course notes, reminders in empty periods, exam and schedule projection, a yearly view, photo or solid-color backgrounds, widgets, and deep links. Course layout and time overlays are precomputed into display snapshots to keep the complex SwiftUI grid responsive.
+
+## Campus, Community, and Sharing
+
+The Campus tab organizes academic records, calendars, classroom search, learning projects, documents, tasks, focus records, sports, career planning, graduate-school information, and ratings. Capability configuration hides entries that a campus does not support.
+
+The community runs on Supabase, with the university session kept separate from the community session. Posts support text, up to four images, and up to two PDF, XLSX, DOCX, or Markdown attachments. Local draft persistence and upload queues make publication recoverable; the post becomes visible only after its media passes validation. Comments are limited to two levels, notifications use Realtime, and moderation actions are handled through the operations console.
+
+Timetable sharing uses one-time invitations and read-only authorization. Users control publication and can revoke a relationship at any time.
+
+## Leafy AI
+
+Leafy AI currently has no public entry point. The retained implementation includes a server-backed Flash service, optional DeepSeek BYOK stored in Keychain, consent-based access to bounded local academic context, source-backed web research, and Artifact pages for reports, lists, tables, and diagrams.
+
+AI actions are limited to preparing navigations, reminders, or schedules for review. They cannot directly alter university records or publish community content on a user's behalf.
+
+## Architecture and Operations
+
+MyLeafy is built with SwiftUI and supports iOS 17 and later. All supported versions use the native TabView; iOS 26 naturally adopts the system Liquid Glass appearance. SwiftData and Keychain handle local persistence, while Supabase Auth, PostgreSQL, Storage, and Edge Functions support remote product data.
+
+The repository also contains a React-admin operations console built with React, MUI, ECharts, Vite, and TypeScript. Cloudflare Pages Functions proxy management requests, keeping high-privilege sessions in HttpOnly cookies and server credentials out of browser JavaScript. Automated checks cover the iOS app, backend contracts, and web console through XCTest, Vitest, Playwright, and GitHub Actions.
+
+## Current Focus
+
+The project now spans an iOS client, a Supabase backend, and a web operations system. Current work prioritizes academic-parser resilience, clear recovery paths, campus capability configuration, tighter links between timetables and learning workflows, and stronger boundaries around identity, sharing, exports, and administration.
+
+MyLeafy taught me how product architecture grows from real failures. Changing university pages led to multi-path parsing, a timetable performance incident led to display snapshots, and community growth led to explicit permissions and audit trails. Owning that path from data source to App Store review has been more valuable than building any isolated screen.
 
 ## Links
 
-- **GitHub Repository**: [IsaacHuo/leafy](https://github.com/IsaacHuo/leafy)
+- [GitHub repository](https://github.com/IsaacHuo/MyLeafy)
+- [Documentation center](https://github.com/IsaacHuo/MyLeafy/tree/main/docs)
+- [Product overview](https://github.com/IsaacHuo/MyLeafy/blob/main/docs/product/overview.md)
+- [Architecture](https://github.com/IsaacHuo/MyLeafy/blob/main/docs/engineering/architecture.md)

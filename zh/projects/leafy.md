@@ -1,27 +1,30 @@
 ---
-title: "MyLeafy：通用型校园 iOS 应用"
+title: "MyLeafy：以课表为核心的校园 iOS 应用"
 date: 2026-07-01
 author: 霍玮放
-description: "通用型校园 iOS 应用，首个上线校园为北京林业大学，以课表为核心整合教务数据、社区、评教和校园工具。"
+description: "面向高校学习与校园生活的原生 iOS 应用，目前主要服务北京林业大学，以课表和学业数据为核心连接教务、社区与校园工具。"
 editLink: true
 outline: [2, 3]
 ---
 
-# MyLeafy：通用型校园 iOS 应用
+# MyLeafy：以课表为核心的校园 iOS 应用
 
-MyLeafy 是我独立开发的通用型校园 iOS 应用。内部代码名、target 和类型命名沿用 `Leafy`，产品展示名已更新为 MyLeafy。首个上线校园是北京林业大学，教务连接器直连北林强智系统。
+MyLeafy 是我独立开发的校园 iOS 应用，目前主要服务北京林业大学。它从课表出发，把成绩、考试、培养方案、空教室、学习记录、校园社区和共享课表放进同一个原生客户端。iOS App、Supabase 后端、官网和运营后台均由我独立完成，目前已服务 5000+ 用户。
+
+仓库、Xcode target 和部分历史类型仍使用 `leafy` / `Leafy`，对外产品名称统一为 MyLeafy。项目已经引入校园能力配置，完整的教务适配目前集中在北京林业大学。
 
 | 入口 | 链接 |
 |---|---|
-| GitHub 仓库 | [IsaacHuo/leafy](https://github.com/IsaacHuo/leafy) |
-| 完整技术文档 | [docs/](https://github.com/IsaacHuo/leafy/tree/main/docs) |
-| 项目总览 | [overview.md](https://github.com/IsaacHuo/leafy/blob/main/docs/overview.md) |
-| 架构说明 | [architecture.md](https://github.com/IsaacHuo/leafy/blob/main/docs/architecture.md) |
-| App 设计 | [app-design.md](https://github.com/IsaacHuo/leafy/blob/main/docs/app-design.md) |
-| UI 风格指南 | [ui-style-guide.md](https://github.com/IsaacHuo/leafy/blob/main/docs/ui-style-guide.md) |
-| Supabase 接入 | [supabase.md](https://github.com/IsaacHuo/leafy/blob/main/docs/supabase.md) |
-| 运营后台 | [admin-console.md](https://github.com/IsaacHuo/leafy/blob/main/docs/admin-console.md) |
-| 路线图 | [roadmap.md](https://github.com/IsaacHuo/leafy/blob/main/docs/roadmap.md) |
+| GitHub 仓库 | [IsaacHuo/MyLeafy](https://github.com/IsaacHuo/MyLeafy) |
+| 文档中心 | [docs/](https://github.com/IsaacHuo/MyLeafy/tree/main/docs) |
+| 项目总览 | [product/overview.md](https://github.com/IsaacHuo/MyLeafy/blob/main/docs/product/overview.md) |
+| App 功能总结 | [product/app-features.md](https://github.com/IsaacHuo/MyLeafy/blob/main/docs/product/app-features.md) |
+| App 产品设计 | [design/app-design.md](https://github.com/IsaacHuo/MyLeafy/blob/main/docs/design/app-design.md) |
+| 架构说明 | [engineering/architecture.md](https://github.com/IsaacHuo/MyLeafy/blob/main/docs/engineering/architecture.md) |
+| UI 风格规范 | [design/ui-style-guide.md](https://github.com/IsaacHuo/MyLeafy/blob/main/docs/design/ui-style-guide.md) |
+| Supabase 接入 | [engineering/supabase.md](https://github.com/IsaacHuo/MyLeafy/blob/main/docs/engineering/supabase.md) |
+| 运营后台 | [engineering/admin-console.md](https://github.com/IsaacHuo/MyLeafy/blob/main/docs/engineering/admin-console.md) |
+| 发展方向 | [product/roadmap.md](https://github.com/IsaacHuo/MyLeafy/blob/main/docs/product/roadmap.md) |
 
 <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; align-items: flex-start;">
   <img src="/project-images/myleafy/calendar.jpg" alt="MyLeafy 课表展示" width="220" loading="lazy" style="max-width: 100%; border-radius: 16px;">
@@ -33,134 +36,91 @@ MyLeafy 是我独立开发的通用型校园 iOS 应用。内部代码名、targ
   <img src="/project-images/myleafy/color.jpg" alt="MyLeafy 主题色展示" width="220" loading="lazy" style="max-width: 100%; border-radius: 16px;">
 </div>
 
-## 功能全景
+## 产品结构
 
-App 以五个根 Tab 组织：
+当前公开版本由四个根 Tab 组成：
 
-| Tab | 承载内容 |
+| Tab | 主要内容 |
 |---|---|
-| **Leafy** | AI 助手，围绕课表、考试、成绩提问；支持自备 DeepSeek API Key 或 Leafy 托管模式 |
-| **课表** | 周视图课表网格、课程详情、考试/提醒/重要日期投射、课表底图、时间视角 |
-| **社区** | 帖子流、发布、搜索、投票、通知、公告、举报、屏蔽 |
-| **学业** | 成绩、自习室、学习、体育、教学培养、职业规划、考研信息、评教/评课/评菜 |
-| **我的** | 社区资料、个人内容、共享课表、主题色、深色模式、反馈、退出 |
+| **课表** | 全学期周课表、课程详情、备注、提醒、考试与日程投射、课表背景、分享和 Widget |
+| **社区** | 帖子、图片与附件、评论、点赞、收藏、投票、通知、公告、举报和屏蔽 |
+| **校园** | 成绩、考试、培养方案、空教室、学习空间、体育、职业规划、考研信息和结构化评价 |
+| **我的** | 社区资料、个人内容、共享课表、外观与显示设置、数据管理、反馈和退出登录 |
 
-每个 Tab 右侧有浮动动作按钮，统一承载各页面的快捷操作入口。
+课表是最高频入口。用户打开 App 后，可以先确认今天的课程和地点，再进入成绩、考试、教室、学习记录等更具体的任务。校园页按领域组织功能，避免继续增加根级入口。
 
-数据源边界：
+Leafy AI 的代码、后端和商品配置仍保留在仓库中。2.9 build 22 暂时隐藏了公开入口和购买流程，当前版本先集中完善免费功能、稳定性和审核合规。
 
-| 数据类型 | 来源 |
+## 数据边界
+
+MyLeafy 同时连接学校系统、本机存储和 Supabase。三类数据各有明确来源：
+
+| 数据 | 来源与处理方式 |
 |---|---|
-| 学号登录、验证码、课表、成绩、考试、教学计划、培养方案、空教室 | 北林强智教务系统 |
-| 社区资料、帖子、图片、评论、点赞、收藏、通知、公告、反馈、评教/评课/评菜、共享课表、考研公共信息、Leafy AI 托管额度 | Supabase |
-| 课程备注、提醒、学习资料、简历、任务、体测、目标院校、常用链接 | 本机 SwiftData / App 私有目录 |
-| 校历、作息、体育场馆 | App 包内资源 |
+| 课表、成绩、考试、教学计划、培养方案、空教室 | 来自北京林业大学强智教务系统，由 App 在用户登录后读取并缓存在本机 |
+| 课程备注、提醒、学习资料、任务、体测等个人记录 | 默认保存在本机 SwiftData 或 App 私有目录 |
+| 社区内容、通知、公告、共享授权、评价与运营配置 | 保存在 Supabase，并通过用户会话、RLS、校园范围和资源所有权控制访问 |
 
-## 课表
+学校教务系统仍是学业数据的权威来源。MyLeafy 保存最近成功获取的本地数据，让用户在学校服务暂时不可用时继续查看；需要多人协作或跨设备的能力再按需使用远程后端。共享课表只上传用户主动发布的字段子集。
 
-课表数据来自强智教务 HTML 页面——没有 API，入口不固定。`fetchTimetable()` 走五层回退：
+## 课表与时间
 
-1. 上次成功访问的 URL 落点
-2. 直接请求 `/jsxsd/xskb/xskb_list.do`
-3. 从返回的查询 form 中提取参数继续请求
-4. 从主页 DOM、`<script>`、`href`、`onclick` 提取候选 URL
-5. 隐藏 `WKWebView` 带 Cookie 复现浏览器完整访问路径
+北林教务系统主要返回 HTML 页面，页面入口、Cookie 行为和结构都可能变化。MyLeafy 使用 `URLSession`、显式 Cookie 管理和 SwiftSoup 完成教务访问与解析，必要时通过 `WKWebView` 复现浏览器访问路径。
 
-HTML 解析支持 `#kbtable` 和 `kbcontent_* / .kbcontent` 两类结构。调试 HTML 落到 `Library/Caches/leafy-debug/`。展示层通过 `TimetableGridSnapshot` 预投影，把课程布局、提醒、考试/倒计时提前算好，不在 SwiftUI body 热路径上重复计算。
+课表固定保留 20 周容器，实际课程周次完全以教务响应为准。学期查询参数和首周日期由远程运行配置提供，正常换学期无需发布新版 App。页面支持周次切换、重叠课程布局、课程备注、空白节次提醒、考试与个人日程投射、年度视图、照片或纯色背景，以及小组件和深链跳转。
 
-课表页覆盖全学期周切换、课程详情、重叠课程并排压缩、课程备注、本地提醒、考试倒计时投射、iPad 列表模式、自定义课表底图等功能。
+为了减少复杂课表网格的渲染开销，课程布局、提醒、考试和日期信息会提前生成展示快照。这个改动来自一次真实的 iPhone 卡顿排查，也让我更明确地区分了数据计算和 SwiftUI 渲染的职责。
 
-小组件支持小号和中号，展示今日/明日课程，点击课程 deep link 到 App 课程详情，每约 20 分钟刷新。
+## 校园与学习
+
+“校园”页把分散的学生事务按任务组织起来：
+
+- 教学培养：成绩、成绩分析、考试、荣誉记录、综合测评、教学计划和培养方案。
+- 时间日程：年度视图、校历、考试、自定义日程和倒计时。
+- 空闲教室：按日期与节次查询空教室、查看指定教室占用并记录专注时间。
+- 学习空间：管理学习项目、资料、任务和记录。
+- 校园工具：体育记录、场馆信息、职业规划、考研信息、结构化评价，以及按校园配置开放的扩展功能。
+
+不同校园只显示已经适配的入口。北京林业大学拥有完整的教务连接和主要社区能力，自定义校园可以继续使用部分本地学习与日程工具。
+
+## 社区与共享
+
+社区建立在 Supabase 上，教务身份和社区会话分开管理。同一教务身份可以在不同设备继承同一份社区资料和内容。
+
+帖子支持文本、最多 4 张图片，以及最多 2 个 PDF、XLSX、DOCX 或 Markdown 附件。图片压缩、草稿保存和上传队列在本机处理，文件完成服务端校验后再原子发布。评论最多两层，通知通过 Realtime 更新。举报进入后台处理流程，屏蔽会让对应用户的帖子、评论和通知在当前账号下不可见。
+
+共享课表使用一次性邀请码和只读授权。用户可以主动发布、查看共享关系并随时撤销，学校原始数据不会自动变成公共内容。
 
 ## Leafy AI
 
-Leafy AI 是独立根 Tab，围绕课表、考试、成绩、培养方案和本机学习记录提问。
+Leafy AI 目前没有公开入口，仓库中保留的实现包括：
 
-两种模式：用户自备 DeepSeek API Key 时，App 直连 `https://api.deepseek.com`，Key 仅保存在本机 Keychain；Leafy 托管模式由 Supabase Edge Function `campus-ai-assistant` 代理调用 DeepSeek，服务端只记录额度、状态、token、估算成本和错误码，不保存 prompt 或 response 正文。
+- 默认使用服务端 Flash 额度，也支持用户自备 DeepSeek API Key；自备 Key 保存在 Keychain，并由设备直连模型服务。
+- 在用户允许的范围内读取课表、考试等本机上下文。
+- 通过受控工具进行联网研究，优先检索北林官网，并可读取网页、带文本层的 PDF 和有限范围的 XLSX。
+- 将报告、清单、表格和流程等复杂结果生成 Artifact，进入独立阅读页查看和导出。
+- 仅准备导航、提醒或日程等可检查动作，不直接修改学校数据或代替用户发布社区内容。
 
-动作规划限于打开 App 内页面、创建重要日期和创建课表提醒，不修改成绩、课表原始数据或社区内容。对话记录保存在本机。
+这部分会在功能完整性、额度验签和审核流程稳定后再恢复公开入口。
 
-## 社区
+## 设计与技术架构
 
-社区数据全部来自 Supabase。登录采用匿名 Supabase 会话绑定教务学号（Edge Function `community-bootstrap-user`），用户不需要额外注册。
+MyLeafy 以 SwiftUI 构建页面和导航，最低支持 iOS 17。所有系统版本使用原生 `TabView`，iOS 26 自然采用系统 Liquid Glass 外观，低版本保留稳定的原生体验。课表支持浅色、深色、主题色、显示密度、照片和纯色背景；个性化背景只保存在本机，也不会出现在分享图或 Widget 中。
 
-帖子流支持分类筛选、近 7 天热门（按互动热度排序）、全局置顶和分类置顶混排。发布支持文本帖子和图片帖子（本地压缩后上传，含图帖子可进入审核流程），支持匿名发布。互动包括一级评论、点赞、收藏。每条帖子和评论提供举报入口，被举报内容从公共 Feed 下架进入后台审核队列。支持屏蔽用户，屏蔽后该用户的帖子、评论和通知全部不可见。
-
-通知订阅使用 Supabase Realtime，App 前台时刷新未读数。站内公告可打开详情。投票功能支持查看列表、发布投票、投票和查看统计。
-
-首次发帖、评论、点赞前需完成社区资料（昵称必填，头像/学院/年级可选），并同意社区条款。
-
-## 学业
-
-学业页通过一级功能切换组织校园工具：成绩查询与趋势分析、空教室与自习室、学习项目管理、体育记录（阳光长跑/体测/场馆）、教学培养方案、职业规划与简历管理、考研信息聚合、评教评课评菜。
-
-## 我的
-
-"我的"页包含社区资料、我的内容（发帖/点赞/评论/收藏/投票）、共享课表、个性化设置（主题色/深色模式/中英文/隐藏周末）、使用手册、反馈、App Store 评分和退出登录。
-
-## 设计系统
-
-主题、颜色、间距、字体集中定义在 `AppTheme.swift`。
-
-主题色 4 种：鼠尾草绿（默认）、蒂芙尼蓝、糖果莓粉、自定义颜色。语义色包括 `accent`、`danger`、`warning` 等。显示密度 4 档，通过 `leafyFontScale` 和 `leafyControlScale` 统一控制。
-
-玻璃和材质通过 `LeafyPageBackground()`、`.leafyCardStyle()`、`.leafyGlassSurface(...)` 封装：iOS 26 使用系统 `glassEffect`，低版本回退到 `topBarMaterial` 和描边。图标优先使用 SF Symbols，英文品牌标题使用 `Lora` 字体。
-
-根导航在 iOS 26 使用系统 `TabView` 和 tab bar；iOS 17-25 使用自定义底部 `RootFloatingTabBar`——一条玻璃胶囊 Tab 区加右侧独立圆形浮动动作按钮。窄屏减少横向边距，极窄宽度下隐藏 Tab 文案只保留图标。
-
-## 技术架构
-
-| 层 | 技术 |
+| 范围 | 技术 |
 |---|---|
-| iOS UI | SwiftUI，部署目标 iOS 17.0 |
-| 本地持久化 | SwiftData（课程、成绩、备注、提醒、学习资料、简历、任务、体测、收藏），`@AppStorage`（设置） |
-| 学校网络 | `URLSession` + 显式 `HTTPCookieStorage` 管理，登录后收集响应 Cookie，每次请求前同步并拼接 `Cookie` 头 |
-| HTML 解析 | SwiftSoup |
-| 课表兜底 | `WKWebView` |
-| 社区后端 | Supabase Auth / Database / Storage / Edge Functions（51 个 migration，16+ Edge Functions） |
-| 后台前端 | React 18 + Vite + TypeScript + Supabase JS，部署在 Cloudflare Pages |
-| AI 服务 | DeepSeek Chat Completions API（直连或 Edge Function 代理） |
+| iOS UI | SwiftUI |
+| 本地持久化 | SwiftData、Keychain、App 私有文件 |
+| 教务网络与解析 | URLSession、HTTPCookieStorage、WKWebView、SwiftSoup |
+| 业务后端 | Supabase Auth、PostgreSQL、Storage、Edge Functions |
+| 运营后台 | React、React-admin、MUI、ECharts、Vite、TypeScript |
+| 边缘代理 | Cloudflare Pages Functions |
+| 自动化检查 | GitHub Actions、Vitest、Playwright、XCTest |
 
-工程分层：
+运营后台负责内容治理、目录维护、运行配置、角色权限和审计。浏览器通过 Cloudflare Pages Functions 访问管理能力，高权限会话保存在 HttpOnly Cookie 中，客户端无法直接读取服务端密钥。
 
-```
-leafy/
-├── App/            # 启动、登录态切换、根 Tab、主题、生命周期
-├── Features/       # Auth、Timetable、Discover、Profile
-│   ├── Presentation/   # SwiftUI 页面、sheet、导航
-│   ├── Application/    # 用例、仓储协议、缓存协调
-│   └── Domain/         # 课表网格快照、周投影等纯计算模型
-├── Services/       # 教务直连（SchoolNetworkManager + 4 个扩展）、Supabase、诊断、WebView 兜底
-├── Parsers/        # SwiftSoup HTML 解析
-└── Shared/Models/  # 社区 DTO、本地 SwiftData 模型
-```
+## 当前重点
 
-两个关键设计：`SchoolNetworkManager` 按职责拆为 Core / Auth / Timetable / Discover 四个扩展，是教务访问的唯一入口；展示层预投影（`TimetableGridSnapshot`）解决了 iPhone 16e 上曾出现的 AutoLayout hang。SwiftData store 损坏时备份旧文件并尝试恢复或降级为内存 store。iOS 26 Liquid Glass 能力通过 `#available` 保护。
+项目已经形成 iOS、Supabase 和 Web 管理三端架构。现阶段的重点是提高教务解析稳定性和故障恢复质量，统一校园能力配置，连接课表、日程与学习空间，并继续收紧身份绑定、共享、导出和管理操作的安全边界。
 
-## 运营后台
-
-官网 `/admin` 挂载 React + TypeScript 后台，iOS App 共享同一 Supabase 项目但权限边界不同：iOS 用 publishable key + 匿名会话 + RLS；后台用 publishable key 调 Edge Functions；Edge Functions 端以 `service_role` 执行管理操作。
-
-模块包括：手册（运营顺序和权限边界）、总览（运营健康和审核压力）、帖子/评论管理（检索/置顶/下架/批量操作）、用户管理（禁言/解除）、反馈处理、公告管理、教师/评分管理、管理员/审计日志。所有管理操作写入审计日志。
-
-## App Store 上架
-
-Guideline 2.3.6（年龄分级元数据）：首次提交时错误选择了"家长控制"和"年龄保证"，修正为 `None` 并通过 Override 设为 18+。
-
-Guideline 1.2（UGC）：发帖/评论前同意社区条款；帖子举报后从 Feed 下架进入审核队列；屏蔽用户使其内容全局不可见；24 小时审核 SLA；`support@myleafy.space` 联系方式和应用内社区安全反馈入口。
-
-## 未来规划
-
-- 课表和教务解析稳定性（加强错误文案，区分网络/登录态/HTML 变化，增加 HTMLParser 回归测试）
-- TestFlight 上线（隐私检查、错误文案、配置安全检查）
-- 社区运营（按真实反馈优化后台筛选和批量处理）
-- 教师名录更新流程
-- 暂缓：Supabase Auth 替代教务登录、学校登录迁入后端、评教文字评价、独立推送基础设施
-
-## 工程收获
-
-**多层回退不是过度设计。** 强智教务的页面结构会变——URL、form 参数、Cookie 行为都可能变。五层 fallback（HTTP → form 提取 → DOM 遍历 → script/onclick 提取 → WKWebView 兜底）是真实系统里被逼出来的。调试 HTML 落盘（`leafy-debug/`）和面向用户的错误文案（"课表数据暂时无法获取"而不是吐一屏 HTML）同样来自真实使用场景。
-
-**设计 token 在功能膨胀时体现价值。** 当 4 种主题色、4 档密度、三套语义色、统一间距和圆角应用于 5 个 Tab 几十个页面时，不硬编码颜色和 magic number 不是规范要求，是实用需求。新页面选语义 token，深色模式和主题切换自动适配。
-
-**完整产品链路。** 数据源（强智 HTML）→ 客户端（SwiftUI + 预投影）→ 后端（Supabase RLS + Edge Functions）→ 运营后台（React + 受控管理操作）→ App Store 合规审核——从 0 到可上线的全链路。边界大多是被逼出来的：WKWebView 兜底因为教务改了页面结构、共享课表不用 Supabase 接管因为本地已是权威数据源。
+这个项目让我真正经历了一个产品从数据源、客户端、后端权限、运营工具到 App Store 审核的完整链路。很多工程边界来自真实问题：教务页面变化促成了多路径解析，课表卡顿促成了展示快照，社区内容增长促成了后台权限和审计。它们比单独完成一个页面更接近真实的软件开发。

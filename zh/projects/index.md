@@ -3,7 +3,7 @@ layout: ProjectsPage
 title: 项目
 thoughts:
   - title: "MyLeafy"
-    description: "通用型校园 iOS App，首个上线校园为北京林业大学。以课表为核心整合教务数据、社区、评教和校园工具，从图标到后端全部独立完成，已服务 5000+ 用户。"
+    description: "面向高校学习与校园生活的原生 iOS App，目前主要服务北京林业大学。以课表和学业数据为核心连接教务、社区与校园工具，从客户端、后端到运营后台均独立完成，已服务 5000+ 用户。"
     url: /zh/projects/leafy
     date: 2026-07-01
     image: /project-images/leafy.png
