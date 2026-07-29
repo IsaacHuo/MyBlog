@@ -22,7 +22,7 @@ const giscusLang = computed(() => {
 
 // Giscus 基础配置
 const giscusBaseConfig = {
-  'data-repo': 'IsaacHuo/My_Blog',
+  'data-repo': 'IsaacHuo/MyBlog',
   'data-repo-id': 'R_kgDOO6P-Dg',
   'data-category': 'Announcements',
   'data-category-id': 'DIC_kwDOO6P-Ds4Cy4z-',

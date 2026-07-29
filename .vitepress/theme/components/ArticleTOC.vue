@@ -123,13 +123,20 @@
 </template>
 
 <script setup lang="ts">
-import { useData } from 'vitepress'
-import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
+import { onContentUpdated } from 'vitepress'
+import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 
-const { page } = useData()
-const headers = ref<any[]>([])
+interface TocHeader {
+  title: string
+  slug: string
+  level: number
+}
+
+const headers = ref<TocHeader[]>([])
 const activeId = ref('')
 const isMobileOpen = ref(false)
+let observer: IntersectionObserver | null = null
+let observerFrame: number | null = null
 
 function toggleMobileToc() {
   isMobileOpen.value = !isMobileOpen.value
@@ -139,34 +146,40 @@ function closeMobileToc() {
   isMobileOpen.value = false
 }
 
-// 手动提取标题的函数（作为 fallback）
-function extractHeaders() {
+function extractHeaders(): TocHeader[] {
   if (typeof document === 'undefined') return []
-  const elements = document.querySelectorAll('.vp-doc h2, .vp-doc h3')
-  const extracted = Array.from(elements).map(el => ({
-    title: (el as HTMLElement).innerText,
-    slug: el.id,
-    level: parseInt(el.tagName.substring(1))
-  }))
-  return extracted
+
+  return Array.from(document.querySelectorAll<HTMLElement>('.vp-doc h2, .vp-doc h3'))
+    .filter(element => element.id)
+    .map(element => ({
+      title: Array.from(element.childNodes)
+        .filter(node => !(node instanceof HTMLElement && node.matches('.header-anchor, .ignore-header')))
+        .map(node => node.textContent ?? '')
+        .join('')
+        .trim(),
+      slug: element.id,
+      level: Number(element.tagName.substring(1))
+    }))
 }
 
-watch(() => page.value.headers, (newHeaders) => {
-  if (newHeaders && newHeaders.length > 0) {
-    headers.value = newHeaders
-  } else {
-    // 如果 page.headers 为空，尝试手动提取
-    // 需要在 DOM 更新后执行
-    nextTick(() => {
-      const extracted = extractHeaders()
-      if (extracted.length > 0) {
-        headers.value = extracted
-        // 重新初始化观察器
-        setTimeout(setupObserver, 100)
-      }
-    })
+async function refreshHeaders() {
+  await nextTick()
+  headers.value = extractHeaders()
+  activeId.value = ''
+  closeMobileToc()
+
+  if (observerFrame !== null) {
+    window.cancelAnimationFrame(observerFrame)
   }
-}, { immediate: true })
+  observerFrame = window.requestAnimationFrame(() => {
+    setupObserver()
+    observerFrame = null
+  })
+}
+
+// VitePress fills the rendered headings after page data is loaded. Its official
+// content hook also runs after client-side route changes.
+onContentUpdated(refreshHeaders)
 
 function scrollToHeader(slug: string) {
   const element = document.getElementById(slug)
@@ -184,9 +197,6 @@ function scrollToHeader(slug: string) {
     history.pushState(null, "", `#${slug}`)
   }
 }
-
-// Scroll spy implementation
-let observer: IntersectionObserver | null = null
 
 function setupObserver() {
   if (observer) observer.disconnect()
@@ -212,13 +222,13 @@ function setupObserver() {
 }
 
 onMounted(() => {
-  // Wait for DOM update
-  setTimeout(setupObserver, 500)
+  refreshHeaders()
   window.addEventListener('scroll', onScroll)
 })
 
 onUnmounted(() => {
   if (observer) observer.disconnect()
+  if (observerFrame !== null) window.cancelAnimationFrame(observerFrame)
   window.removeEventListener('scroll', onScroll)
 })
 
@@ -232,9 +242,6 @@ function onScroll() {
   }
 }
 
-watch(() => page.value.relativePath, () => {
-  setTimeout(setupObserver, 500)
-})
 </script>
 
 <style scoped>

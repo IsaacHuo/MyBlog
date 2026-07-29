@@ -25,7 +25,7 @@ export default defineConfig({
           { text: '片段', link: '/zh/fragments/' }
         ],
         socialLinks: [
-          { icon: 'github', link: 'https://github.com/IsaacHuo/My_Blog' }
+          { icon: 'github', link: 'https://github.com/IsaacHuo/MyBlog' }
         ],
         footer: {
           copyright: 'Copyright © 2024 Huo Weifang'
@@ -59,7 +59,7 @@ export default defineConfig({
 
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/IsaacHuo/My_Blog' }
+      { icon: 'github', link: 'https://github.com/IsaacHuo/MyBlog' }
     ],
 
     footer: {

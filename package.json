@@ -12,9 +12,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/IsaacHuo/My_Blog.git"
+    "url": "git+https://github.com/IsaacHuo/MyBlog.git"
   },
-  "homepage": "https://github.com/IsaacHuo/My_Blog#readme",
+  "homepage": "https://github.com/IsaacHuo/MyBlog#readme",
   "license": "ISC",
   "devDependencies": {
     "@vue/eslint-config-typescript": "^14.6.0",
