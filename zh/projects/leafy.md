@@ -13,18 +13,7 @@ MyLeafy 是我独立开发的校园 iOS 应用，目前主要服务北京林业�
 
 仓库、Xcode target 和部分历史类型仍使用 `leafy` / `Leafy`，对外产品名称统一为 MyLeafy。项目已经引入校园能力配置，完整的教务适配目前集中在北京林业大学。
 
-| 入口 | 链接 |
-|---|---|
-| GitHub 仓库 | [IsaacHuo/MyLeafy](https://github.com/IsaacHuo/MyLeafy) |
-| 文档中心 | [docs/](https://github.com/IsaacHuo/MyLeafy/tree/main/docs) |
-| 项目总览 | [product/overview.md](https://github.com/IsaacHuo/MyLeafy/blob/main/docs/product/overview.md) |
-| App 功能总结 | [product/app-features.md](https://github.com/IsaacHuo/MyLeafy/blob/main/docs/product/app-features.md) |
-| App 产品设计 | [design/app-design.md](https://github.com/IsaacHuo/MyLeafy/blob/main/docs/design/app-design.md) |
-| 架构说明 | [engineering/architecture.md](https://github.com/IsaacHuo/MyLeafy/blob/main/docs/engineering/architecture.md) |
-| UI 风格规范 | [design/ui-style-guide.md](https://github.com/IsaacHuo/MyLeafy/blob/main/docs/design/ui-style-guide.md) |
-| Supabase 接入 | [engineering/supabase.md](https://github.com/IsaacHuo/MyLeafy/blob/main/docs/engineering/supabase.md) |
-| 运营后台 | [engineering/admin-console.md](https://github.com/IsaacHuo/MyLeafy/blob/main/docs/engineering/admin-console.md) |
-| 发展方向 | [product/roadmap.md](https://github.com/IsaacHuo/MyLeafy/blob/main/docs/product/roadmap.md) |
+项目入口：[GitHub 仓库](https://github.com/IsaacHuo/MyLeafy) · [文档中心](https://github.com/IsaacHuo/MyLeafy/tree/main/docs) · [项目总览](https://github.com/IsaacHuo/MyLeafy/blob/main/docs/product/overview.md) · [App 产品设计](https://github.com/IsaacHuo/MyLeafy/blob/main/docs/design/app-design.md) · [架构说明](https://github.com/IsaacHuo/MyLeafy/blob/main/docs/engineering/architecture.md) · [UI 风格规范](https://github.com/IsaacHuo/MyLeafy/blob/main/docs/design/ui-style-guide.md) · [Supabase 接入](https://github.com/IsaacHuo/MyLeafy/blob/main/docs/engineering/supabase.md) · [运营后台](https://github.com/IsaacHuo/MyLeafy/blob/main/docs/engineering/admin-console.md)
 
 <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; align-items: flex-start;">
   <img src="/project-images/myleafy/calendar.jpg" alt="MyLeafy 课表展示" width="220" loading="lazy" style="max-width: 100%; border-radius: 16px;">
@@ -47,9 +36,9 @@ MyLeafy 是我独立开发的校园 iOS 应用，目前主要服务北京林业�
 | **校园** | 成绩、考试、培养方案、空教室、学习空间、体育、职业规划、考研信息和结构化评价 |
 | **我的** | 社区资料、个人内容、共享课表、外观与显示设置、数据管理、反馈和退出登录 |
 
-课表是最高频入口。用户打开 App 后，可以先确认今天的课程和地点，再进入成绩、考试、教室、学习记录等更具体的任务。校园页按领域组织功能，避免继续增加根级入口。
+课表是最高频入口。用户打开 App 后，可以先确认今天的课程和地点，再进入成绩、考试、教室、学习记录等更具体的任务。“校园”页负责容纳不断扩展的工具，根导航因此保持稳定。
 
-Leafy AI 的代码、后端和商品配置仍保留在仓库中。2.9 build 22 暂时隐藏了公开入口和购买流程，当前版本先集中完善免费功能、稳定性和审核合规。
+MyLeafy AI 的客户端、后端和商品配置仍保留在项目中。2.9 build 22 暂时隐藏了公开入口和购买流程，当前公开版本集中完善免费功能、稳定性和审核合规。
 
 ## 数据边界
 
@@ -61,15 +50,17 @@ MyLeafy 同时连接学校系统、本机存储和 Supabase。三类数据各有
 | 课程备注、提醒、学习资料、任务、体测等个人记录 | 默认保存在本机 SwiftData 或 App 私有目录 |
 | 社区内容、通知、公告、共享授权、评价与运营配置 | 保存在 Supabase，并通过用户会话、RLS、校园范围和资源所有权控制访问 |
 
-学校教务系统仍是学业数据的权威来源。MyLeafy 保存最近成功获取的本地数据，让用户在学校服务暂时不可用时继续查看；需要多人协作或跨设备的能力再按需使用远程后端。共享课表只上传用户主动发布的字段子集。
+学校教务系统仍是学业数据的权威来源。MyLeafy 保存最近一次成功获取的数据，学校服务暂时不可用时仍可查看缓存。需要多人协作或跨设备的数据再按需进入远程后端，共享课表也只上传用户主动发布的字段。
 
 ## 课表与时间
 
 北林教务系统主要返回 HTML 页面，页面入口、Cookie 行为和结构都可能变化。MyLeafy 使用 `URLSession`、显式 Cookie 管理和 SwiftSoup 完成教务访问与解析，必要时通过 `WKWebView` 复现浏览器访问路径。
 
-课表固定保留 20 周容器，实际课程周次完全以教务响应为准。学期查询参数和首周日期由远程运行配置提供，正常换学期无需发布新版 App。页面支持周次切换、重叠课程布局、课程备注、空白节次提醒、考试与个人日程投射、年度视图、照片或纯色背景，以及小组件和深链跳转。
+课表固定保留 20 周容器，实际课程周次完全以教务响应为准。学期查询参数和首周日期由远程运行配置提供，正常换学期无需发布新版 App。页面支持周次切换、重叠课程布局、课程备注、提醒、考试与个人日程投射、年度视图、照片或纯色背景、小组件和深链跳转。
 
-为了减少复杂课表网格的渲染开销，课程布局、提醒、考试和日期信息会提前生成展示快照。这个改动来自一次真实的 iPhone 卡顿排查，也让我更明确地区分了数据计算和 SwiftUI 渲染的职责。
+日程能力围绕课表继续扩展：自定义安排在当前学期范围内投射到课表，范围外显示为倒计时；考试和重要日期按规则生成提醒。用户仍从熟悉的时间界面出发，无需在多个日历页面之间反复切换。
+
+为了减少复杂课表网格的渲染开销，课程布局、提醒、考试和日期信息会提前生成不可变的展示快照。这个方案来自一次真实的 iPhone 卡顿与 SwiftData 生命周期排查，也让我更明确地区分了数据计算、持久化和 SwiftUI 渲染的职责。
 
 ## 校园与学习
 
@@ -81,22 +72,24 @@ MyLeafy 同时连接学校系统、本机存储和 Supabase。三类数据各有
 - 学习空间：管理学习项目、资料、任务和记录。
 - 校园工具：体育记录、场馆信息、职业规划、考研信息、结构化评价，以及按校园配置开放的扩展功能。
 
-不同校园只显示已经适配的入口。北京林业大学拥有完整的教务连接和主要社区能力，自定义校园可以继续使用部分本地学习与日程工具。
+不同校园只显示已经适配的入口。北京林业大学拥有完整的教务连接和主要社区能力，自定义校园可以继续使用部分本地学习与日程工具。首页横幅、入口状态和校园内容可以通过运营后台按校园配置，更新这些信息无需重新发布客户端。
 
 ## 社区与共享
 
-社区建立在 Supabase 上，教务身份和社区会话分开管理。同一教务身份可以在不同设备继承同一份社区资料和内容。
+社区建立在 Supabase 上，教务身份和社区会话分别管理。同一教务身份可以在不同设备继承同一份社区资料和内容。
 
-帖子支持文本、最多 4 张图片，以及最多 2 个 PDF、XLSX、DOCX 或 Markdown 附件。图片压缩、草稿保存和上传队列在本机处理，文件完成服务端校验后再原子发布。评论最多两层，通知通过 Realtime 更新。举报进入后台处理流程，屏蔽会让对应用户的帖子、评论和通知在当前账号下不可见。
+帖子支持文本、最多 4 张图片，以及最多 2 个 PDF、XLSX、DOCX 或 Markdown 附件。普通帖草稿按账号保存在本机，发布前完成压缩、类型检查和上传校验；所有资源准备完成后，帖子才进入公开状态。分享卡以 JPEG 在本机生成，不会因为分享动作额外上传用户内容。
 
-共享课表使用一次性邀请码和只读授权。用户可以主动发布、查看共享关系并随时撤销，学校原始数据不会自动变成公共内容。
+评论最多两层，通知通过 Realtime 更新。举报进入后台处理流程，屏蔽会让对应用户的帖子、评论和通知在当前账号下不可见。后台还负责公告、校园横幅、内容治理、目录维护、角色权限和审计。
 
-## Leafy AI
+共享课表使用一次性邀请码和只读授权。用户可以主动发布、查看共享关系并随时撤销，成绩、备注和提醒不进入共享数据。
 
-Leafy AI 目前没有公开入口，仓库中保留的实现包括：
+## MyLeafy AI
+
+MyLeafy AI 目前没有公开入口，项目中保留的实现包括：
 
 - 默认使用服务端 Flash 额度，也支持用户自备 DeepSeek API Key；自备 Key 保存在 Keychain，并由设备直连模型服务。
-- 在用户允许的范围内读取课表、考试等本机上下文。
+- 在用户允许的范围内读取课表、考试等有限本机上下文。
 - 通过受控工具进行联网研究，优先检索北林官网，并可读取网页、带文本层的 PDF 和有限范围的 XLSX。
 - 将报告、清单、表格和流程等复杂结果生成 Artifact，进入独立阅读页查看和导出。
 - 仅准备导航、提醒或日程等可检查动作，不直接修改学校数据或代替用户发布社区内容。
@@ -112,15 +105,15 @@ MyLeafy 以 SwiftUI 构建页面和导航，最低支持 iOS 17。所有系统�
 | iOS UI | SwiftUI |
 | 本地持久化 | SwiftData、Keychain、App 私有文件 |
 | 教务网络与解析 | URLSession、HTTPCookieStorage、WKWebView、SwiftSoup |
-| 业务后端 | Supabase Auth、PostgreSQL、Storage、Edge Functions |
+| 业务后端 | Supabase Auth、PostgreSQL、Storage、Realtime、Edge Functions |
 | 运营后台 | React、React-admin、MUI、ECharts、Vite、TypeScript |
 | 边缘代理 | Cloudflare Pages Functions |
 | 自动化检查 | GitHub Actions、Vitest、Playwright、XCTest |
 
-运营后台负责内容治理、目录维护、运行配置、角色权限和审计。浏览器通过 Cloudflare Pages Functions 访问管理能力，高权限会话保存在 HttpOnly Cookie 中，客户端无法直接读取服务端密钥。
+客户端按 Presentation、Application、Domain 和 Data 分层。学校数据、本机数据和 MyLeafy 云端数据拥有各自的权威来源；跨用户、高权限和管理操作必须经过服务端认证、参数校验与审计。运营后台通过 Cloudflare Pages Functions 访问管理能力，高权限会话保存在 HttpOnly Cookie 中，浏览器端无法读取服务端密钥。
 
 ## 当前重点
 
 项目已经形成 iOS、Supabase 和 Web 管理三端架构。现阶段的重点是提高教务解析稳定性和故障恢复质量，统一校园能力配置，连接课表、日程与学习空间，并继续收紧身份绑定、共享、导出和管理操作的安全边界。
 
-这个项目让我真正经历了一个产品从数据源、客户端、后端权限、运营工具到 App Store 审核的完整链路。很多工程边界来自真实问题：教务页面变化促成了多路径解析，课表卡顿促成了展示快照，社区内容增长促成了后台权限和审计。它们比单独完成一个页面更接近真实的软件开发。
+这个项目让我经历了一个产品从数据源、客户端、后端权限、运营工具到 App Store 审核的完整链路。很多工程边界来自真实问题：教务页面变化促成了多路径解析，课表卡顿和崩溃促成了值类型展示快照，社区内容增长促成了上传校验、后台权限和审计。它们比单独完成一个页面更接近真实的软件开发。
