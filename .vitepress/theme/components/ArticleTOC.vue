@@ -36,7 +36,7 @@
   >
     <button 
       class="mobile-toc-btn" 
-      aria-label="Table of Contents" 
+      aria-label="打开目录" 
       @click="toggleMobileToc"
     >
       <svg
@@ -75,6 +75,7 @@
           y2="18"
         />
       </svg>
+      <span class="mobile-toc-label">目录</span>
     </button>
 
     <Transition name="fade">
@@ -322,9 +323,12 @@ function onScroll() {
   position: fixed;
   bottom: calc(100px + env(safe-area-inset-bottom)); /* Above BackToTop + Safe Area */
   right: 40px;
-  width: 50px;
+  width: auto;
+  min-width: 50px;
   height: 50px;
-  border-radius: 50%;
+  padding: 0 16px;
+  gap: 8px;
+  border-radius: 999px;
   background: var(--vp-c-bg);
   color: var(--vp-c-text-1);
   border: 1px solid var(--vp-c-border);
@@ -435,6 +439,12 @@ function onScroll() {
   padding: 4px;
 }
 
+.mobile-toc-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
 /* Animations */
 @keyframes slideUp {
   from {
@@ -462,9 +472,30 @@ function onScroll() {
   .custom-toc.desktop-toc {
     display: none;
   }
-  
+
   .mobile-toc-container {
     display: block;
+  }
+}
+
+/*
+ * Project pages use a narrower 600px reading column, leaving enough room for
+ * a real sidebar on most laptop screens. Keep the sidebar inside the remaining
+ * gutter instead of lowering the global breakpoint and covering blog content.
+ */
+@media (min-width: 960px) and (max-width: 1280px) {
+  :global(.is-project-page) .custom-toc.desktop-toc {
+    display: block;
+    left: auto;
+    right: 12px;
+    margin-left: 0;
+    width: clamp(144px, calc(50vw - 336px), 240px);
+    padding: 0.8rem;
+    font-size: 0.82rem;
+  }
+
+  :global(.is-project-page) .mobile-toc-container {
+    display: none;
   }
 }
 
@@ -480,8 +511,20 @@ function onScroll() {
   .mobile-toc-btn {
     bottom: 80px; /* 20px (BackToTop bottom) + 45px (height) + 15px gap */
     right: 20px;
-    width: 45px;
+    min-width: 45px;
     height: 45px;
+    padding: 0 14px;
+  }
+}
+
+@media (max-width: 599px) {
+  .mobile-toc-btn {
+    width: 45px;
+    padding: 0;
+  }
+
+  .mobile-toc-label {
+    display: none;
   }
 }
 </style>
