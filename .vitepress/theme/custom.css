@@ -268,6 +268,19 @@ a:visited {
   min-width: 0 !important;
 }
 
+/*
+ * Below the desktop-outline breakpoint VitePress hides its aside, but the
+ * generic desktop rule above removes the content column's automatic margins.
+ * Re-center project articles so the now-empty aside area cannot push the page
+ * against the left edge.
+ */
+@media (min-width: 769px) and (max-width: 1280px) {
+  .is-project-page .VPDoc .content {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}
+
 .is-project-page .vp-doc table {
   display: block !important;
   width: 100% !important;
