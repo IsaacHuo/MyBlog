@@ -127,14 +127,6 @@ const formatArticleDate = (value) => {
 </script>
 
 <style>
-[data-frontmatter-layout="BooksPage"] .VPDoc .container .content .content-container {
-  display: none;
-}
-
-[data-frontmatter-layout="BooksPage"] .VPDoc {
-  padding: 0;
-}
-
 .article-meta-container {
   display: flex;
   align-items: baseline;

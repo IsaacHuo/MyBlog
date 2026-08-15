@@ -79,7 +79,8 @@ onMounted(() => {
   margin-top: var(--space-3xl);
   padding-top: var(--space-xl);
   border-top: 1px solid var(--vp-c-border);
-  max-width: 600px;
+  /* Match the article column; the content-container caps the width. */
+  max-width: 100%;
 }
 
 /* Giscus 容器样式调整 */

@@ -249,7 +249,8 @@ function onScroll() {
 .custom-toc.desktop-toc {
   position: fixed;
   left: 50%;
-  margin-left: 390px; /* 700px content / 2 + 40px gap */
+  /* Article is centered with --article-content-width; TOC sits 40px to its right. */
+  margin-left: calc(var(--article-content-width) / 2 + 40px);
   top: 150px;
   width: 240px;
   max-height: calc(100vh - 170px);

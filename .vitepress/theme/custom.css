@@ -50,10 +50,11 @@
   --space-3xl: 4rem;
 
   /* Layout */
-  --vp-layout-max-width: 1200px;
   --content-max-width: 800px;
-  --article-content-width: 760px;
-  --article-toc-width: 300px;
+  /* Unified article reading width. Single owner of article width; shared by
+     essays and projects. On smaller viewports the column simply fills the
+     available space below this cap. */
+  --article-content-width: 700px;
   --nav-content-width: 1180px;
 }
 
@@ -169,7 +170,6 @@ a:visited {
 .VPNavBar a,
 .sidebar-nav a,
 .outline a,
-.blog-card a,
 .post-title a {
   color: inherit !important;
 }
@@ -178,180 +178,63 @@ a:visited {
    3. LAYOUT & CONTAINER
    ========================================================================== */
 
-/* Main Document Centering Logic */
+/* Unified Article Layout (essays and projects share this single system)
+   -----------------------------------------------------------------------
+   Width ownership:
+
+     Viewport
+        → .VPDoc horizontal padding      page gutter (VitePress default)
+        → .content-container max-width   article reading width (--article-content-width)
+        → .vp-doc content flow           typography, no width rules
+
+   The default VitePress aside (outline column) is hidden entirely. The
+   visible TOC is a custom component positioned independently, so the 256px
+   aside reservation that used to push the article 128px off-center is gone.
+   No translateX, no per-page-type width, no mobile padding patches.
+   ----------------------------------------------------------------------- */
+
 .vp-doc {
   width: 100% !important;
   animation: fadeIn 0.6s ease-out;
 }
 
-/* Content Width & Alignment */
-.page-container,
-.vp-doc>div:not(.outline),
-.vp-doc .container .content,
-.VPDoc .container .content,
-.centered-content {
-  max-width: var(--content-max-width);
-  margin: 0 auto;
-  padding-left: var(--space-lg);
-  padding-right: var(--space-lg);
+/* The article column only centers; the content-container owns the width. */
+.is-article-page .VPDoc .aside {
+  display: none !important;
 }
 
-/* Desktop Specific Layout */
-@media (min-width: 769px) {
-  .vp-doc {
-    display: flex !important;
-    justify-content: center !important;
-    align-items: flex-start !important;
-    max-width: none !important;
-  }
-
-  .content,
-  div.content,
-  .vp-doc .content {
-    width: 700px !important;
-    max-width: 700px !important;
-    margin: 0 !important;
-    flex: none !important;
-    display: block !important;
-  }
-
-  /* Right Sidebar (TOC) positioning */
-  .vp-doc aside,
-  .vp-doc .aside {
-    position: fixed !important;
-    right: 2rem !important;
-    top: 50% !important;
-    transform: translateY(-50%) !important;
-    width: 200px !important;
-    z-index: 10 !important;
-    padding-left: 1rem !important;
-  }
-
-  /* Prevent tables from overflowing content */
-  .vp-doc table {
-    display: block !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    overflow-x: auto !important;
-  }
-
-  /* Project pages stay readable even when a table contains long links or code. */
-  .is-project-page .VPDoc .container .content,
-  .is-project-page .vp-doc .content {
-    width: 600px !important;
-    max-width: 600px !important;
-    min-width: 0 !important;
-  }
-
-  /* Reset container display for proper flow */
-  .vp-doc .container {
-    display: contents !important;
-  }
+.is-article-page .VPDoc .content {
+  margin-left: auto !important;
+  margin-right: auto !important;
+  max-width: none !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 
-/*
- * VitePress reserves a 256px aside column on pages with an outline. Our
- * visible TOC is positioned independently, so that invisible reservation
- * shifts the article body 128px left of the viewport center. Correct only the
- * blog article body while the desktop TOC is visible; the TOC stays fixed.
- */
-@media (min-width: 1280px) {
-  .is-article-page:not(.is-project-page) .VPDoc.has-aside .content-container {
-    transform: translateX(128px);
-  }
-}
-
-.is-project-page .VPDoc .container,
-.is-project-page .VPDoc .content,
-.is-project-page .VPDoc .content-container,
-.is-project-page .vp-doc {
-  min-width: 0 !important;
-}
-
-/*
- * Below the desktop-outline breakpoint VitePress hides its aside, but the
- * generic desktop rule above removes the content column's automatic margins.
- * Re-center project articles so the now-empty aside area cannot push the page
- * against the left edge.
- */
-@media (min-width: 769px) and (max-width: 1280px) {
-  .is-project-page .VPDoc .content {
-    margin-left: auto !important;
-    margin-right: auto !important;
-  }
-}
-
-.is-project-page .vp-doc table {
-  display: block !important;
+.is-article-page .VPDoc .content-container {
   width: 100% !important;
-  max-width: 100% !important;
-  overflow-x: auto !important;
+  max-width: var(--article-content-width) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
-.is-project-page .vp-doc th,
-.is-project-page .vp-doc td {
-  min-width: 0 !important;
-  white-space: normal !important;
+/* The wrapper VitePress puts around rendered markdown must not add its own
+   gutters. Page gutter comes from .VPDoc padding only, so header and body
+   always share the same left/right alignment. */
+.is-article-page .vp-doc > div:not(.outline) {
+  max-width: none !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* Long inline content (links, code) inside table cells wraps instead of
+   stretching the article column. The default .vp-doc table already scrolls
+   horizontally inside the column. */
+.is-article-page .vp-doc th,
+.is-article-page .vp-doc td {
+  min-width: 0;
   overflow-wrap: anywhere;
   word-break: break-word;
-}
-
-.is-project-page .vp-doc td :where(a, code) {
-  overflow-wrap: anywhere;
-  word-break: break-word;
-}
-
-/* Mobile Layout Overrides */
-@media (max-width: 768px) {
-
-  .vp-doc,
-  .vp-doc .content,
-  .VPDoc .container .content,
-  .centered-content {
-    display: block !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-  }
-
-  .vp-doc .content,
-  .VPDoc .container .content {
-    padding: 0 6px !important;
-    /* Reduced padding to maximize mobile reading width */
-  }
-
-  .page-container {
-    padding-left: 6px !important;
-    padding-right: 6px !important;
-  }
-}
-
-/* Hide Default TOC Title */
-.VPDocAsideOutline .VPDocAsideOutlineTitle,
-.vp-doc .aside-outline-title,
-.outline-title {
-  display: none !important;
-}
-
-/* Hide Default TOC Content completely to use custom one */
-.VPDocAsideOutline {
-  display: none !important;
-}
-
-/* TOC Link Styles */
-.VPDocAsideOutline .outline-link {
-  color: #000 !important;
-}
-
-.VPDocAsideOutline .outline-link:hover,
-.VPDocAsideOutline .outline-link.active {
-  color: #0066cc !important;
-  font-weight: 600;
-}
-
-/* Hide "Return to top" in outline */
-.VPDocAsideOutline a[href="#"] {
-  display: none !important;
 }
 
 
@@ -546,237 +429,13 @@ html[lang="en"] .is-article-page .vp-doc li {
 }
 
 html[lang="zh-CN"] .is-project-page .vp-doc,
-html[lang="zh-CN"] .is-project-page .vp-doc :where(:not(pre, code, kbd, samp, svg, svg *)),
-html[lang="zh-CN"] .thoughts-layout,
-html[lang="zh-CN"] .thoughts-layout :where(:not(pre, code, kbd, samp, svg, svg *)) {
+html[lang="zh-CN"] .is-project-page .vp-doc :where(:not(pre, code, kbd, samp, svg, svg *)) {
   font-family: var(--font-zh) !important;
 }
 
 html[lang="en"] .is-project-page .vp-doc,
-html[lang="en"] .is-project-page .vp-doc :where(:not(pre, code, kbd, samp, svg, svg *)),
-html[lang="en"] .thoughts-layout,
-html[lang="en"] .thoughts-layout :where(:not(pre, code, kbd, samp, svg, svg *)) {
+html[lang="en"] .is-project-page .vp-doc :where(:not(pre, code, kbd, samp, svg, svg *)) {
   font-family: var(--font-latin) !important;
-}
-
-/* --- Blog Cards --- */
-.blog-card {
-  background: var(--vp-c-bg);
-  border: 1px solid var(--vp-c-border);
-  border-radius: 0;
-  padding: var(--space-xl);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-}
-
-.blog-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-  border-color: var(--vp-c-brand-1);
-}
-
-.blog-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: var(--vp-c-brand-1);
-  transform: scaleX(0);
-  transition: transform 0.3s ease;
-  transform-origin: left;
-}
-
-.blog-card:hover::before {
-  transform: scaleX(1);
-}
-
-.blog-card h3,
-.blog-card .title,
-.post-title {
-  font-size: 24px !important;
-  font-weight: 600;
-  margin: 0 0 var(--space-md) 0;
-}
-
-.blog-card .meta {
-  font-size: var(--vp-font-size-sm);
-  color: var(--vp-c-text-3);
-  margin-bottom: var(--space-md);
-  text-transform: uppercase;
-}
-
-.blog-card .description {
-  color: var(--vp-c-text-2);
-  line-height: 1.7;
-  margin-bottom: var(--space-lg);
-}
-
-.blog-card .tag {
-  display: inline-block;
-  background: var(--vp-c-bg-mute);
-  color: var(--vp-c-text-2);
-  padding: var(--space-xs) var(--space-sm);
-  margin: 0 var(--space-xs) var(--space-xs) 0;
-  font-size: var(--vp-font-size-xs);
-  border: 1px solid var(--vp-c-border);
-}
-
-/* --- Home Layout --- */
-.home-layout {
-  display: grid;
-  grid-template-columns: 1fr 300px;
-  gap: var(--space-2xl);
-  max-width: var(--vp-layout-max-width);
-  margin: 0 auto;
-  padding: var(--space-2xl) var(--space-lg);
-}
-
-.home-sidebar {
-  position: sticky;
-  top: 96px;
-  height: fit-content;
-}
-
-@media (max-width: 960px) {
-  .home-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .home-sidebar {
-    position: static;
-  }
-}
-
-/* --- Profile Page --- */
-.profile-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: var(--space-2xl) var(--space-lg);
-}
-
-.profile-header {
-  display: flex;
-  align-items: center;
-  gap: var(--space-xl);
-  margin-bottom: var(--space-3xl);
-  padding-bottom: var(--space-xl);
-  border-bottom: 1px solid var(--vp-c-border);
-}
-
-.avatar-placeholder {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--vp-c-bg-soft) 0%, var(--vp-c-bg-mute) 100%);
-  border: 3px solid var(--vp-c-border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.profile-name {
-  font-size: var(--vp-font-size-3xl);
-  font-weight: 700;
-}
-
-.profile-content h2 {
-  text-align: left;
-  /* Override global centering */
-  border-bottom: 2px solid var(--vp-c-brand-soft);
-  padding-bottom: var(--space-sm);
-}
-
-/* --- Books Page & Sidebar --- */
-.vp-doc .books-page-container {
-  max-width: var(--content-max-width);
-  margin: 0 auto;
-  padding: var(--space-3xl) var(--space-lg);
-  padding-left: 260px;
-  /* Space for sidebar */
-}
-
-.books-sidebar {
-  position: fixed;
-  left: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 200px;
-  max-height: 70vh;
-  overflow-y: auto;
-  background: var(--vp-c-bg-soft);
-  border: 1px solid var(--vp-c-border);
-  padding: var(--space-md);
-  z-index: 10;
-}
-
-.books-content {
-  text-align: center;
-}
-
-.books-content h1 {
-  font-size: 44px;
-  margin-top: var(--space-xl);
-}
-
-.books-content h2 {
-  border-bottom: 2px solid var(--vp-c-border);
-}
-
-/* Mobile Sidebar logic */
-@media (max-width: 1024px) {
-  .vp-doc .books-page-container {
-    padding-left: var(--space-lg);
-  }
-
-  .books-sidebar {
-    left: -100%;
-    top: 0;
-    width: 280px;
-    height: 100vh;
-    transform: none;
-    z-index: 100;
-  }
-
-  .books-sidebar.active {
-    left: 0;
-  }
-
-  .mobile-sidebar-toggle {
-    display: flex;
-  }
-}
-
-/* --- Misc Components --- */
-.article-comments-section {
-  margin-top: 2rem;
-  padding-top: 2rem;
-}
-
-/* Desktop Floating Github Link */
-@media (min-width: 769px) {
-  .custom-github-link {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 50px;
-    height: 50px;
-    background: var(--vp-c-brand-1);
-    color: white !important;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    z-index: 100;
-  }
-
-  .custom-github-link:hover {
-    transform: scale(1.05);
-  }
 }
 
 /* Animation */
@@ -806,12 +465,6 @@ html[lang="en"] .thoughts-layout :where(:not(pre, code, kbd, samp, svg, svg *)) 
 /* Disable Custom Sidebars on Mobile */
 @media (max-width: 768px) {
 
-  .books-sidebar,
-  .home-sidebar,
-  .custom-github-link {
-    display: none !important;
-  }
-
   /* Ensure Nav Z-Index is highest */
   .VPNav,
   .VPNavBar {
@@ -829,15 +482,6 @@ html[lang="en"] .thoughts-layout :where(:not(pre, code, kbd, samp, svg, svg *)) 
   .VPFooter {
     display: none;
   }
-
-  .blog-card {
-    break-inside: avoid;
-    border: 1px solid #ccc;
-  }
-}
-
-[data-frontmatter-layout="BooksPage"] .VPDoc .container .content .content-container {
-  display: none;
 }
 
 /* ==========================================================================
@@ -1083,8 +727,7 @@ html[lang="zh-CN"] .nav-link,
 html[lang="zh-CN"] .custom-language-link,
 html[lang="zh-CN"] .language-link-zh,
 html[lang="zh-CN"] .about-intro strong,
-html[lang="zh-CN"] .about-description strong,
-html[lang="zh-CN"] .thought-title {
+html[lang="zh-CN"] .about-description strong {
   font-weight: 400 !important;
 }
 
