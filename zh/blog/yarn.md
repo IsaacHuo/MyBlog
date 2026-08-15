@@ -1,12 +1,12 @@
 ---
-title: "Yarn: JavaScript 包管理器的另一条路线"
+title: "Yarn，JavaScript 包管理器的另一条路线"
 date: 2026-01-29
 category: 技术
 author: 霍玮放
 description: yarn, npm, package-manager
 ---
 
-# Yarn: JavaScript 包管理器的另一条路线
+# Yarn，JavaScript 包管理器的另一条路线
 
 Facebook（现 Meta）在 2016 年联合 Google、Exponent 和 Tilde 发布 Yarn。当时 npm 的安装速度、缓存和可复现性仍有明显问题，Yarn 给出了另一套实现，也推动 npm 后续改进。
 
@@ -43,4 +43,3 @@ Berry 支持 `nodeLinker: node-modules`，需要兼容传统生态时可以继�
 维护已有 Yarn 项目时，继续使用与 lock 文件匹配的 Yarn 大多最稳妥。新项目则可以根据团队经验、Monorepo 需求、部署环境和工具兼容性，在 npm、pnpm、Yarn 与 Bun 之间选择。
 
 Yarn 最重要的影响，是把可复现安装、缓存和工作区能力推成了包管理器的常规要求。今天选不选 Yarn，已经不影响这段贡献。
-

@@ -22,7 +22,7 @@ You are my English speaking practice partner. Use only English when talking to m
 Start with one simple question.
 ```
 
-## 场景一：机场全程
+## 场景一，机场全程
 
 ```text
 Let's role-play a complete airport journey. You will take turns acting as an airline check-in agent, a security officer, a gate agent, and an immigration officer. I will be the traveler.
@@ -32,7 +32,7 @@ Move naturally through these situations: checking in, choosing a seat, checking 
 Say only one sentence or ask only one question at a time, then wait for my answer. Do not give me sample answers. When the role-play is over, review my performance using the beginner-mode rules.
 ```
 
-## 场景二：酒店入住与退房
+## 场景二，酒店入住与退房
 
 ```text
 Let's role-play a complete hotel stay, from check-in to check-out. You will be the hotel receptionist, and I will be the guest.
@@ -42,7 +42,7 @@ Move naturally through these situations: confirming my reservation, checking my 
 Ask only one question at a time, then wait for my answer. Do not give me sample answers. When the role-play is over, review my performance using the beginner-mode rules.
 ```
 
-## 场景三：国外餐厅点餐
+## 场景三，国外餐厅点餐
 
 ```text
 Let's role-play a complete meal at a restaurant abroad. You will be the server, and I will be the customer.
@@ -52,7 +52,7 @@ Move naturally through these situations: asking whether I have a reservation, fi
 Ask only one question at a time, then wait for my answer. Do not give me sample answers. When the role-play is over, review my performance using the beginner-mode rules.
 ```
 
-## 场景四：酒店应急问题
+## 场景四，酒店应急问题
 
 ```text
 Let's role-play a problem during a hotel stay. You will be the receptionist or duty manager, and I will be the guest.
@@ -62,7 +62,7 @@ Choose one situation at random: a noisy room, broken air conditioning, no hot wa
 Say only one sentence or ask only one question at a time, then wait for my answer. When the problem is resolved, review my performance using the beginner-mode rules.
 ```
 
-## 场景五：打车、问路与交通
+## 场景五，打车、问路与交通
 
 ```text
 Let's role-play getting around in another country. You will take turns acting as a taxi driver, a bus or subway employee, and a person giving directions. I will be the traveler.

@@ -1,12 +1,12 @@
 ---
-title: "Bun: 集成式 JavaScript 工具链"
+title: "Bun，集成式 JavaScript 工具链"
 date: 2026-01-29
 category: 技术
 author: 霍玮放
 description: bun, runtime, performance
 ---
 
-# Bun: 集成式 JavaScript 工具链
+# Bun，集成式 JavaScript 工具链
 
 Bun 把 JavaScript 运行时、包管理、测试和打包放进了同一个工具。它可以直接执行 TypeScript 和 JSX，也能安装 npm 生态中的依赖。对开发者来说，吸引力主要来自启动快、命令少，以及一套工具可以覆盖更多日常任务。
 

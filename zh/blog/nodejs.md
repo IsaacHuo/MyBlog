@@ -1,12 +1,12 @@
 ---
-title: 什么是 Node.js？从原理到应用
+title: 什么是 Node.js，从原理到应用
 date: 2026-01-29
 category: 技术
 author: 霍玮放
 description: nodejs, runtime, performance
 ---
 
-# 什么是 Node.js？从原理到应用
+# 什么是 Node.js，从原理到应用
 
 Node.js 是基于 V8 的 JavaScript 运行时。它让 JavaScript 可以离开浏览器，访问文件、网络、进程等操作系统能力，因此常被用来编写服务器和命令行工具。
 
@@ -30,13 +30,13 @@ Node.js 会把许多 I/O 操作交给操作系统或 libuv。主线程可以继�
 
 JavaScript 默认在一个主线程上执行，但 Node.js 进程内部并非只有一个线程。libuv 会使用线程池处理部分文件系统、DNS 和加密任务，V8 自身也有后台线程。应用还可以使用 `worker_threads` 或多进程处理 CPU 密集型工作。
 
-所以更准确的说法是：Node.js 默认用单个事件循环线程执行 JavaScript，并通过系统异步能力、线程池和额外工作线程完成其他任务。
+所以更准确的说法是，Node.js 默认用单个事件循环线程执行 JavaScript，并通过系统异步能力、线程池和额外工作线程完成其他任务。
 
 ## 4. 架构组成
 
-1. V8：解析、编译并执行 JavaScript。
-2. libuv：提供跨平台事件循环、异步 I/O 和线程池。
-3. 核心模块：`http`、`fs`、`path`、`net` 等模块暴露常用系统能力。
+1. V8，解析、编译并执行 JavaScript。
+2. libuv，提供跨平台事件循环、异步 I/O 和线程池。
+3. 核心模块，`http`、`fs`、`path`、`net` 等模块暴露常用系统能力。
 
 ## 5. 常见用途
 

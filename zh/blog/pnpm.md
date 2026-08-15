@@ -1,5 +1,5 @@
 ---
-title: "pnpm: 高效、节省空间的包管理器"
+title: "pnpm，高效、节省空间的包管理器"
 date: 2026-01-29
 category: 技术
 author: 霍玮放
