@@ -2,10 +2,15 @@
 layout: ProjectsPage
 title: Projects
 thoughts:
+  - title: "Familiar"
+    description: "A native, safe and inspectable personal AI workspace for iPhone, built around a single-Agent runtime, a composable tool abstraction, and a BYOK model layer that keeps data on-device."
+    url: /en/projects/familiar
+    date: 2026-08-14
+    image: /project-images/familiar.png
   - title: "MyLeafy"
-    description: "A native iOS app for university study and campus life, currently focused on Beijing Forestry University. It connects academic data, community, and campus tools around the timetable, with the client, backend, and operations console built independently for 5,000+ users."
+    description: "A native iOS app for university study and campus life, currently focused on Beijing Forestry University. It connects academic data, community, a personal journal, and campus tools around the timetable, with the client, backend, and operations console built independently for 5,000+ users."
     url: /en/projects/leafy
-    date: 2026-07-01
+    date: 2026-08-15
     image: /project-images/leafy.png
   - title: "Poemery"
     description: "An offline poetry reading iOS app built with SwiftUI and a local poetry database. Uses an Apple Music-style architecture for browsing — works fully offline with favorites and search."
