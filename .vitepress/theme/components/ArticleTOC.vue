@@ -458,7 +458,7 @@ function onScroll() {
 }
 
 /* Responsive Logic */
-@media (max-width: 1280px) {
+@media (max-width: 1279px) {
   .custom-toc.desktop-toc {
     display: none;
   }
