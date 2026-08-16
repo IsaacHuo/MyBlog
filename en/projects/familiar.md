@@ -15,6 +15,25 @@ The app is BYOK-only: users bring their own model API Key, model requests go dir
 
 ![Familiar](/project-images/familiar.png)
 
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center"><img src="/project-images/familiar/chat.png" width="210" alt="Chat"></td>
+    <td align="center"><img src="/project-images/familiar/drawer.png" width="210" alt="Drawer"></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="/project-images/familiar/settings.png" width="210" alt="Settings"></td>
+    <td align="center"><img src="/project-images/familiar/permissions.png" width="210" alt="Permissions"></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="/project-images/familiar/storage.png" width="210" alt="Storage"></td>
+    <td align="center"><img src="/project-images/familiar/tools.png" width="210" alt="Tools"></td>
+  </tr>
+</table>
+
+*Chat · Drawer · Settings · Permissions · Storage · Tools*
+
 ## Design Choices
 
 Familiar made a few contrarian choices up front to avoid the defaults of many AI apps at the time:

@@ -15,6 +15,25 @@ Familiar 是我为 iPhone 开发的个人 AI 工作台。它以聊天为主要�
 
 ![Familiar](/project-images/familiar.png)
 
+## 界面预览
+
+<table>
+  <tr>
+    <td align="center"><img src="/project-images/familiar/chat.png" width="210" alt="聊天"></td>
+    <td align="center"><img src="/project-images/familiar/drawer.png" width="210" alt="侧边栏"></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="/project-images/familiar/settings.png" width="210" alt="设置"></td>
+    <td align="center"><img src="/project-images/familiar/permissions.png" width="210" alt="权限"></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="/project-images/familiar/storage.png" width="210" alt="存储"></td>
+    <td align="center"><img src="/project-images/familiar/tools.png" width="210" alt="工具"></td>
+  </tr>
+</table>
+
+*聊天 · 侧边栏 · 设置 · 权限 · 存储 · 工具*
+
 ## 设计取舍
 
 Familiar 从一开始就做了几个相反的取舍，来避开当时主流 AI App 的默认做法。
