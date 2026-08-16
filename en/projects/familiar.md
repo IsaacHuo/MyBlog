@@ -13,7 +13,7 @@ Familiar is a personal AI workspace I built for iPhone. Chat is the primary entr
 
 The app is BYOK-only: users bring their own model API Key, model requests go directly from the device to the selected provider, and conversations, attachments, and tool records stay on the device without ever passing through a Familiar server. There is no account, subscription, or managed quota.
 
-![Familiar](/project-images/familiar.png)
+<p align="center"><img src="/project-images/familiar.png" width="112" alt="Familiar icon" loading="lazy"></p>
 
 ## Screenshots
 

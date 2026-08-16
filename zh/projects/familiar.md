@@ -13,7 +13,7 @@ Familiar 是我为 iPhone 开发的个人 AI 工作台。它以聊天为主要�
 
 项目采用 BYOK 模式。用户使用自己的模型 API Key，模型请求从设备直接发送到所选 Provider，会话、附件和工具记录都保存在本机，不经过任何 Familiar 服务器。App 没有账户、没有订阅，也没有托管额度。
 
-![Familiar](/project-images/familiar.png)
+<p align="center"><img src="/project-images/familiar.png" width="112" alt="Familiar 图标" loading="lazy"></p>
 
 ## 界面预览
 
