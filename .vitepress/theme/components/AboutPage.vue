@@ -150,19 +150,11 @@
               id="homepage-mail-body"
               v-model="mailBody"
               rows="1"
-              :placeholder="isZh ? '联系我...' : 'Write your message...'"
             />
             <button type="submit">
               {{ isZh ? '发送邮件' : 'Send email' }}
             </button>
           </form>
-
-          <p class="contact-note">
-            {{ isZh
-              ? '我正在找寻实习，如您需要，可以给您发送我的简历。'
-              : 'I am currently looking for an internship and can share my resume if needed.'
-            }}
-          </p>
         </div>
       </div>
     </div>
