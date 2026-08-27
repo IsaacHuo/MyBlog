@@ -1,18 +1,31 @@
 <template>
   <div class="blog-list-page">
-    <!-- 移动端使用 Tab 切换，桌面端直接显示两栏 -->
-    <nav class="blog-tabs">
+    <nav
+      class="blog-tabs"
+      :aria-label="isZh ? '文章分类' : 'Post categories'"
+    >
       <button
+        id="blog-tab-tech"
         class="tab-btn"
         :class="{ active: activeTab === 'tech' }"
+        type="button"
+        :aria-pressed="activeTab === 'tech'"
+        aria-controls="blog-panel-tech"
         @click="activeTab = 'tech'"
       >
         {{ isZh ? '技术' : 'Tech' }}
       </button>
-      <span class="tab-divider">|</span>
+      <span
+        class="tab-divider"
+        aria-hidden="true"
+      >|</span>
       <button
+        id="blog-tab-life"
         class="tab-btn"
         :class="{ active: activeTab === 'life' }"
+        type="button"
+        :aria-pressed="activeTab === 'life'"
+        aria-controls="blog-panel-life"
         @click="activeTab = 'life'"
       >
         {{ isZh ? '随笔' : 'Essays' }}
@@ -21,6 +34,7 @@
 
     <div class="blog-columns">
       <section
+        id="blog-panel-tech"
         class="blog-column"
         :class="{ 'mobile-hidden': activeTab !== 'tech' }"
       >
@@ -34,13 +48,12 @@
             class="post-list-item"
           >
             <span class="post-meta">
-              {{ formatDate(post.frontmatter.date) }}
+              <time :datetime="String(post.frontmatter.date)">{{ formatDate(post.frontmatter.date) }}</time>
               <ViewCounter
                 :id="postViewId(post.url)"
                 :legacy-ids="legacyPostViewIds(post.url)"
                 :is-zh="isZh"
                 readonly
-                refresh-on-focus
                 class="inline-vc"
               />
             </span>
@@ -55,6 +68,7 @@
       </section>
 
       <section
+        id="blog-panel-life"
         class="blog-column"
         :class="{ 'mobile-hidden': activeTab !== 'life' }"
       >
@@ -68,13 +82,12 @@
             class="post-list-item"
           >
             <span class="post-meta">
-              {{ formatDate(post.frontmatter.date) }}
+              <time :datetime="String(post.frontmatter.date)">{{ formatDate(post.frontmatter.date) }}</time>
               <ViewCounter
                 :id="postViewId(post.url)"
                 :legacy-ids="legacyPostViewIds(post.url)"
                 :is-zh="isZh"
                 readonly
-                refresh-on-focus
                 class="inline-vc"
               />
             </span>

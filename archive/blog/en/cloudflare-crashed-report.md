@@ -99,4 +99,3 @@ The incident came from a combination of reasonable choices: more precise permiss
 
 - [Cloudflare's official postmortem](https://blog.cloudflare.com/18-november-2025-outage/)
 - [ClickHouse documentation](https://clickhouse.com/docs)
-

@@ -1,7 +1,7 @@
 import { createContentLoader } from 'vitepress'
 
 const loader = createContentLoader(['zh/blog/*.md', 'en/blog/*.md'], {
-  includeSrc: true,
+  includeSrc: false,
   render: false,
   excerpt: false,
   transform(rawData) {
@@ -14,10 +14,9 @@ const loader = createContentLoader(['zh/blog/*.md', 'en/blog/*.md'], {
         if (normalizedUrl.endsWith('/template')) return false
         return true
       })
-      .map(({ url, frontmatter, src }) => ({
+      .map(({ url, frontmatter }) => ({
         url,
-        frontmatter,
-        src // 保留源码以供搜索
+        frontmatter
       }))
       .sort((a, b) => {
         return +new Date(b.frontmatter.date) - +new Date(a.frontmatter.date)

@@ -21,16 +21,18 @@
       >
         <div class="fragment-meta">
           <span>
-            <time v-if="fragment.date">{{ formatDate(fragment.date) }}</time>
+            <time
+              v-if="fragment.date"
+              :datetime="fragment.date"
+            >{{ formatDate(fragment.date) }}</time>
             <span v-if="fragment.type"> · {{ fragment.type }}</span>
           </span>
         </div>
         <div
           v-if="fragment.visualEmoji"
           class="fragment-visual"
-          aria-hidden="true"
         >
-          <span>{{ fragment.visualEmoji }}</span>
+          <span aria-hidden="true">{{ fragment.visualEmoji }}</span>
           <small v-if="fragment.visualText">{{ fragment.visualText }}</small>
         </div>
         <img
@@ -51,20 +53,23 @@
         >
           <span aria-hidden="true" />{{ fragment.status }}
         </p>
-        <div
+        <ul
           v-if="fragment.tags?.length"
           class="fragment-tags"
+          :aria-label="isZh ? '标签' : 'Tags'"
         >
-          <span
+          <li
             v-for="tag in fragment.tags"
             :key="tag"
-          >{{ tag }}</span>
-        </div>
+          >
+            {{ tag }}
+          </li>
+        </ul>
         <a
           v-if="fragment.link"
-          :href="fragment.link"
-          target="_blank"
-          rel="noopener noreferrer"
+          :href="resolveLink(fragment.link)"
+          :target="isExternalUrl(fragment.link) ? '_blank' : undefined"
+          :rel="isExternalUrl(fragment.link) ? 'noopener noreferrer' : undefined"
         >
           {{ fragment.linkText || (isZh ? '查看链接' : 'Open link') }} ↗
         </a>
@@ -90,7 +95,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useData } from 'vitepress'
+import { useData, withBase } from 'vitepress'
 
 type FragmentItem = {
   id?: string
@@ -109,7 +114,9 @@ type FragmentItem = {
 
 const { frontmatter, page, site } = useData()
 const isZh = computed(() => site.value.lang === 'zh-CN' || page.value.relativePath.startsWith('zh/'))
-const fragments = computed<FragmentItem[]>(() => frontmatter.value.fragments || [])
+const fragments = computed<FragmentItem[]>(() => Array.isArray(frontmatter.value.fragments)
+  ? frontmatter.value.fragments
+  : [])
 
 const fragmentKinds = computed(() => isZh.value
   ? [
@@ -140,6 +147,14 @@ function formatDate(value: string) {
     month: 'short',
     day: 'numeric'
   }).format(date)
+}
+
+function isExternalUrl(url: string) {
+  return /^(?:https?:)?\/\//i.test(url.trim())
+}
+
+function resolveLink(url: string) {
+  return isExternalUrl(url) ? url : withBase(url)
 }
 </script>
 
@@ -264,10 +279,13 @@ function formatDate(value: string) {
   display: flex;
   flex-wrap: wrap;
   gap: 7px;
-  margin-top: 14px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
 }
 
-.fragment-tags span {
+.fragment-tags li {
+  margin: 0;
   padding: 2px 8px;
   border-radius: 999px;
   background: color-mix(in srgb, var(--vp-c-text-1) 6%, transparent);

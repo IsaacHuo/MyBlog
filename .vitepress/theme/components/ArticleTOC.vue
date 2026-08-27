@@ -1,25 +1,28 @@
 <template>
-  <!-- Desktop TOC -->
   <div
-    v-if="headers && headers.length > 0"
+    v-if="headers.length"
     class="custom-toc desktop-toc"
   >
     <div class="toc-header">
-      目录
+      {{ copy.title }}
     </div>
-    <nav class="toc-content">
+    <nav
+      class="toc-content"
+      :aria-label="copy.navigationLabel"
+    >
       <ul>
-        <li 
-          v-for="header in headers" 
+        <li
+          v-for="header in headers"
           :key="header.slug"
-          :class="{ 
-            'active': activeId === header.slug,
+          :class="{
+            active: activeId === header.slug,
             'toc-h2': header.level === 2,
             'toc-h3': header.level === 3
           }"
         >
-          <a 
-            :href="`#${header.slug}`" 
+          <a
+            :href="`#${header.slug}`"
+            :aria-current="activeId === header.slug ? 'location' : undefined"
             @click.prevent="scrollToHeader(header.slug)"
           >
             {{ header.title }}
@@ -29,20 +32,22 @@
     </nav>
   </div>
 
-  <!-- Mobile TOC Button & Overlay -->
   <div
-    v-if="headers && headers.length > 0"
+    v-if="headers.length"
     class="mobile-toc-container"
   >
-    <button 
-      class="mobile-toc-btn" 
-      aria-label="打开目录" 
-      @click="toggleMobileToc"
+    <button
+      ref="mobileButton"
+      class="mobile-toc-btn"
+      type="button"
+      :aria-label="copy.openLabel"
+      :aria-expanded="isMobileOpen"
+      aria-controls="mobile-article-toc"
+      @click="openMobileToc"
     >
       <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
+        aria-hidden="true"
+        focusable="false"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
@@ -50,66 +55,50 @@
         stroke-linecap="round"
         stroke-linejoin="round"
       >
-        <line
-          x1="21"
-          y1="10"
-          x2="3"
-          y2="10"
-        />
-        <line
-          x1="21"
-          y1="6"
-          x2="3"
-          y2="6"
-        />
-        <line
-          x1="21"
-          y1="14"
-          x2="3"
-          y2="14"
-        />
-        <line
-          x1="21"
-          y1="18"
-          x2="3"
-          y2="18"
-        />
+        <path d="M3 6h18M3 10h18M3 14h18M3 18h18" />
       </svg>
     </button>
 
-    <Transition name="fade">
+    <Transition name="toc-fade">
       <div
         v-if="isMobileOpen"
+        id="mobile-article-toc"
+        ref="mobileDialog"
         class="mobile-toc-overlay"
-        @click="closeMobileToc"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="mobile-article-toc-title"
+        @click.self="closeMobileToc"
+        @keydown="handleDialogKeydown"
       >
-        <div
-          class="mobile-toc-content"
-          @click.stop
-        >
+        <div class="mobile-toc-content">
           <div class="mobile-toc-header">
-            <span>目录</span>
+            <span id="mobile-article-toc-title">{{ copy.title }}</span>
             <button
+              ref="closeButton"
               class="close-btn"
+              type="button"
+              :aria-label="copy.closeLabel"
               @click="closeMobileToc"
             >
-              &times;
+              <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <nav>
+          <nav :aria-label="copy.navigationLabel">
             <ul>
-              <li 
-                v-for="header in headers" 
+              <li
+                v-for="header in headers"
                 :key="header.slug"
-                :class="{ 
-                  'active': activeId === header.slug,
+                :class="{
+                  active: activeId === header.slug,
                   'toc-h2': header.level === 2,
                   'toc-h3': header.level === 3
                 }"
               >
-                <a 
-                  :href="`#${header.slug}`" 
-                  @click.prevent="scrollToHeader(header.slug); closeMobileToc()"
+                <a
+                  :href="`#${header.slug}`"
+                  :aria-current="activeId === header.slug ? 'location' : undefined"
+                  @click.prevent="selectMobileHeader(header.slug)"
                 >
                   {{ header.title }}
                 </a>
@@ -123,8 +112,8 @@
 </template>
 
 <script setup lang="ts">
-import { onContentUpdated } from 'vitepress'
-import { ref, onMounted, onUnmounted, nextTick } from 'vue'
+import { onContentUpdated, useData } from 'vitepress'
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 
 interface TocHeader {
   title: string
@@ -132,25 +121,36 @@ interface TocHeader {
   level: number
 }
 
+const { lang } = useData()
 const headers = ref<TocHeader[]>([])
 const activeId = ref('')
 const isMobileOpen = ref(false)
-let observer: IntersectionObserver | null = null
-let observerFrame: number | null = null
+const mobileButton = ref<HTMLButtonElement | null>(null)
+const closeButton = ref<HTMLButtonElement | null>(null)
+const mobileDialog = ref<HTMLElement | null>(null)
 
-function toggleMobileToc() {
-  isMobileOpen.value = !isMobileOpen.value
-}
+const copy = computed(() => lang.value.toLowerCase().startsWith('zh')
+  ? {
+      title: '目录',
+      navigationLabel: '文章目录',
+      openLabel: '打开文章目录',
+      closeLabel: '关闭文章目录'
+    }
+  : {
+      title: 'Contents',
+      navigationLabel: 'Table of contents',
+      openLabel: 'Open table of contents',
+      closeLabel: 'Close table of contents'
+    })
 
-function closeMobileToc() {
-  isMobileOpen.value = false
-}
+let headingElements: HTMLElement[] = []
+let updateFrame: number | null = null
+let backgroundLocked = false
+let previousBodyOverflow = ''
+let previousHtmlOverflow = ''
 
 function extractHeaders(): TocHeader[] {
-  if (typeof document === 'undefined') return []
-
-  return Array.from(document.querySelectorAll<HTMLElement>('.vp-doc h2, .vp-doc h3'))
-    .filter(element => element.id)
+  return Array.from(document.querySelectorAll<HTMLElement>('.vp-doc h2[id], .vp-doc h3[id]'))
     .map(element => ({
       title: Array.from(element.childNodes)
         .filter(node => !(node instanceof HTMLElement && node.matches('.header-anchor, .ignore-header')))
@@ -158,264 +158,355 @@ function extractHeaders(): TocHeader[] {
         .join('')
         .trim(),
       slug: element.id,
-      level: Number(element.tagName.substring(1))
+      level: Number(element.tagName.slice(1))
     }))
+    .filter(header => header.title)
 }
 
 async function refreshHeaders() {
   await nextTick()
-  headers.value = extractHeaders()
-  activeId.value = ''
-  closeMobileToc()
+  if (typeof window === 'undefined') return
 
-  if (observerFrame !== null) {
-    window.cancelAnimationFrame(observerFrame)
-  }
-  observerFrame = window.requestAnimationFrame(() => {
-    setupObserver()
-    observerFrame = null
-  })
+  if (isMobileOpen.value) closeMobileToc()
+  headers.value = extractHeaders()
+  headingElements = headers.value
+    .map(header => document.getElementById(header.slug))
+    .filter((element): element is HTMLElement => element !== null)
+  scheduleActiveHeadingUpdate()
 }
 
-// VitePress fills the rendered headings after page data is loaded. Its official
-// content hook also runs after client-side route changes.
-onContentUpdated(refreshHeaders)
+function getActivationLine() {
+  const navBottom = document.querySelector<HTMLElement>('.VPNav')?.getBoundingClientRect().bottom ?? 0
+  return Math.max(navBottom, 0) + 24
+}
+
+function updateActiveHeading() {
+  updateFrame = null
+  if (isMobileOpen.value && window.innerWidth >= 1280) closeMobileToc()
+
+  if (!headingElements.length) {
+    activeId.value = ''
+    return
+  }
+
+  const pageBottom = window.scrollY + window.innerHeight
+  const documentBottom = document.documentElement.scrollHeight
+  if (pageBottom >= documentBottom - 2) {
+    activeId.value = headingElements[headingElements.length - 1].id
+    return
+  }
+
+  const activationLine = getActivationLine()
+  let nextActiveId = headingElements[0].id
+
+  for (const heading of headingElements) {
+    if (heading.getBoundingClientRect().top > activationLine) break
+    nextActiveId = heading.id
+  }
+
+  activeId.value = nextActiveId
+}
+
+function scheduleActiveHeadingUpdate() {
+  if (updateFrame !== null) return
+  updateFrame = window.requestAnimationFrame(updateActiveHeading)
+}
+
+function prefersReducedMotion() {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+}
 
 function scrollToHeader(slug: string) {
   const element = document.getElementById(slug)
-  if (element) {
-    const offset = 80 // Adjust for fixed header
-    const elementPosition = element.getBoundingClientRect().top + window.pageYOffset
-    const offsetPosition = elementPosition - offset
+  if (!element) return
 
-    window.scrollTo({
-      top: offsetPosition,
-      behavior: 'smooth'
-    })
-    activeId.value = slug
-    // Update URL hash without jumping
-    history.pushState(null, "", `#${slug}`)
-  }
-}
-
-function setupObserver() {
-  if (observer) observer.disconnect()
-
-  const options = {
-    root: null,
-    rootMargin: '-100px 0px -60% 0px',
-    threshold: 0
-  }
-
-  observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        activeId.value = entry.target.id
-      }
-    })
-  }, options)
-
-  headers.value.forEach(header => {
-    const el = document.getElementById(header.slug)
-    if (el) observer?.observe(el)
+  activeId.value = slug
+  element.scrollIntoView({
+    block: 'start',
+    behavior: prefersReducedMotion() ? 'auto' : 'smooth'
   })
+  window.history.pushState(null, '', `#${slug}`)
 }
+
+function openMobileToc() {
+  isMobileOpen.value = true
+}
+
+function closeMobileToc() {
+  isMobileOpen.value = false
+}
+
+function selectMobileHeader(slug: string) {
+  scrollToHeader(slug)
+  closeMobileToc()
+}
+
+function lockBackgroundScroll() {
+  if (backgroundLocked) return
+  previousBodyOverflow = document.body.style.overflow
+  previousHtmlOverflow = document.documentElement.style.overflow
+  document.body.style.overflow = 'hidden'
+  document.documentElement.style.overflow = 'hidden'
+  backgroundLocked = true
+}
+
+function unlockBackgroundScroll() {
+  if (!backgroundLocked) return
+  document.body.style.overflow = previousBodyOverflow
+  document.documentElement.style.overflow = previousHtmlOverflow
+  backgroundLocked = false
+}
+
+function handleDialogKeydown(event: KeyboardEvent) {
+  if (event.key === 'Escape') {
+    event.preventDefault()
+    closeMobileToc()
+    return
+  }
+
+  if (event.key !== 'Tab' || !mobileDialog.value) return
+
+  const focusable = Array.from(
+    mobileDialog.value.querySelectorAll<HTMLElement>('button:not([disabled]), a[href]')
+  )
+  if (!focusable.length) return
+
+  const first = focusable[0]
+  const last = focusable[focusable.length - 1]
+  const activeElement = document.activeElement
+
+  if (event.shiftKey && (activeElement === first || !mobileDialog.value.contains(activeElement))) {
+    event.preventDefault()
+    last.focus()
+  } else if (!event.shiftKey && activeElement === last) {
+    event.preventDefault()
+    first.focus()
+  }
+}
+
+watch(isMobileOpen, async isOpen => {
+  if (isOpen) {
+    lockBackgroundScroll()
+    await nextTick()
+    closeButton.value?.focus()
+    return
+  }
+
+  unlockBackgroundScroll()
+  await nextTick()
+  mobileButton.value?.focus()
+})
+
+onContentUpdated(refreshHeaders)
 
 onMounted(() => {
   refreshHeaders()
-  window.addEventListener('scroll', onScroll)
+  window.addEventListener('scroll', scheduleActiveHeadingUpdate, { passive: true })
+  window.addEventListener('resize', scheduleActiveHeadingUpdate, { passive: true })
 })
 
 onUnmounted(() => {
-  if (observer) observer.disconnect()
-  if (observerFrame !== null) window.cancelAnimationFrame(observerFrame)
-  window.removeEventListener('scroll', onScroll)
+  unlockBackgroundScroll()
+  if (updateFrame !== null) window.cancelAnimationFrame(updateFrame)
+  window.removeEventListener('scroll', scheduleActiveHeadingUpdate)
+  window.removeEventListener('resize', scheduleActiveHeadingUpdate)
 })
-
-// Fallback scroll handler for better accuracy
-function onScroll() {
-  // Simple check if at bottom
-  if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100) {
-    if (headers.value.length > 0) {
-      activeId.value = headers.value[headers.value.length - 1].slug
-    }
-  }
-}
-
 </script>
 
 <style scoped>
-/* Desktop TOC Styles */
+:global(.vp-doc h2[id]),
+:global(.vp-doc h3[id]) {
+  scroll-margin-top: var(--site-heading-scroll-offset, 6rem);
+}
+
 .custom-toc.desktop-toc {
   position: fixed;
   left: 50%;
-  /* Article is centered with --article-content-width; TOC sits 40px to its right. */
-  margin-left: calc(var(--article-content-width) / 2 + 40px);
   top: 150px;
+  z-index: 2000;
   width: 240px;
   max-height: calc(100vh - 170px);
-  overflow-y: auto;
+  margin-left: calc(var(--article-content-width) / 2 + 40px);
   padding: 1rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   background: var(--vp-c-bg);
-  border-radius: 12px;
   border: 1px solid var(--vp-c-border);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
   font-size: 0.9rem;
-  z-index: 2000;
+  scrollbar-gutter: stable;
   transition: opacity 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .toc-header {
-  font-weight: 600;
   margin-bottom: 0.8rem;
   padding-bottom: 0.5rem;
+  color: var(--site-text, var(--vp-c-text-1));
   border-bottom: 1px solid var(--vp-c-divider);
-  color: var(--vp-c-text-1);
   font-family: var(--vp-font-family-base);
+  font-weight: 600;
 }
 
-.toc-content ul {
+.toc-content ul,
+.mobile-toc-content ul {
+  margin: 0;
+  padding: 0;
   list-style: none;
+}
+
+.toc-content li,
+.mobile-toc-content li {
   margin: 0;
   padding: 0;
 }
 
 .toc-content li {
-  margin: 0;
-  padding: 0;
   line-height: 1.4;
 }
 
 .toc-content a {
   display: block;
-  padding: 4px 0;
+  margin-left: -12px;
+  padding: 4px 0 4px 10px;
   color: var(--vp-c-text-1) !important;
+  border-left: 2px solid transparent;
   text-decoration: none;
   transition: all 0.2s ease;
-  border-left: 2px solid transparent;
-  padding-left: 10px;
-  margin-left: -12px; /* Align border with container edge */
 }
 
 .toc-content a:hover {
-  color: #4D74EB !important;
+  color: #4d74eb !important;
   background: var(--vp-c-bg-soft);
 }
 
 .toc-content li.active > a {
-  color: #4D74EB !important;
-  border-left-color: #4D74EB;
-  font-weight: 500;
+  color: #4d74eb !important;
   background: var(--vp-c-bg-soft);
+  border-left-color: #4d74eb;
+  font-weight: 500;
 }
 
 .toc-h3 a {
-  padding-left: 24px;
+  padding-left: 1.5rem;
   font-size: 0.85em;
 }
 
-/* Mobile TOC Components */
 .mobile-toc-container {
-  display: none; /* Hidden by default on desktop */
+  display: none;
+}
+
+.mobile-toc-btn,
+.close-btn {
+  color: var(--vp-c-text-1);
+  background: var(--vp-c-bg);
+  border: 1px solid var(--vp-c-border);
+  cursor: pointer;
 }
 
 .mobile-toc-btn {
   position: fixed;
-  bottom: calc(100px + env(safe-area-inset-bottom)); /* Above BackToTop + Safe Area */
-  right: 40px;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background: var(--vp-c-bg);
-  color: var(--vp-c-text-1);
-  border: 1px solid var(--vp-c-border);
-  cursor: pointer;
+  right: calc(40px + env(safe-area-inset-right, 0px));
+  bottom: calc(100px + env(safe-area-inset-bottom, 0px));
+  z-index: 2005;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  z-index: 2005; /* Increased z-index */
+  width: 50px;
+  height: 50px;
+  padding: 0;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 15%);
   transition: all 0.3s ease;
+}
+
+.mobile-toc-btn svg {
+  display: block;
+  width: 24px;
+  height: 24px;
 }
 
 .mobile-toc-btn:hover {
   background: var(--vp-c-bg-soft);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 20%);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.mobile-toc-btn:focus-visible,
+.close-btn:focus-visible,
+.mobile-toc-content a:focus-visible,
+.toc-content a:focus-visible {
+  outline: 2px solid var(--site-focus-ring, var(--vp-c-brand-1));
+  outline-offset: 3px;
 }
 
 .mobile-toc-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.5);
+  inset: 0;
   z-index: 2100;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  padding-top: max(20px, env(safe-area-inset-top, 0px));
+  padding-right: max(20px, env(safe-area-inset-right, 0px));
+  padding-bottom: max(20px, env(safe-area-inset-bottom, 0px));
+  padding-left: max(20px, env(safe-area-inset-left, 0px));
+  background: rgb(0 0 0 / 50%);
   backdrop-filter: blur(2px);
 }
 
 .mobile-toc-content {
-  background: var(--vp-c-bg);
+  display: flex;
+  flex-direction: column;
   width: 100%;
   max-width: 320px;
   max-height: 70vh;
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  display: flex;
-  flex-direction: column;
   overflow: hidden;
-  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  background: var(--vp-c-bg);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgb(0 0 0 / 20%);
+  animation: toc-slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .mobile-toc-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   padding: 16px;
   border-bottom: 1px solid var(--vp-c-divider);
-  font-weight: 600;
   font-size: 1.1em;
+  font-weight: 600;
 }
 
 .mobile-toc-content nav {
-  overflow-y: auto;
   padding: 16px;
-}
-
-.mobile-toc-content ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.mobile-toc-content li {
-  margin: 0;
-  padding: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
 }
 
 .mobile-toc-content a {
   display: block;
   padding: 8px 12px;
   color: var(--vp-c-text-1);
-  text-decoration: none;
+  border-left: 3px solid transparent;
   border-radius: 6px;
   font-size: 0.95em;
+  text-decoration: none;
   transition: background 0.2s;
-  border-left: 3px solid transparent;
 }
 
-.mobile-toc-content a:hover {
+.mobile-toc-content a:hover,
+.mobile-toc-content a:focus-visible {
   background: var(--vp-c-bg-soft);
 }
 
 .mobile-toc-content li.active > a {
-  background: var(--vp-c-brand-soft);
   color: var(--vp-c-brand-1);
+  background: var(--vp-c-brand-soft);
   border-left-color: var(--vp-c-brand-1);
   font-weight: 500;
 }
@@ -427,38 +518,36 @@ function onScroll() {
 }
 
 .close-btn {
+  padding: 4px;
+  color: var(--vp-c-text-2);
   background: none;
   border: none;
   font-size: 24px;
   line-height: 1;
-  cursor: pointer;
-  color: var(--vp-c-text-2);
-  padding: 4px;
 }
 
-/* Animations */
-@keyframes slideUp {
+@keyframes toc-slide-up {
   from {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-.fade-enter-active,
-.fade-leave-active {
+.toc-fade-enter-active,
+.toc-fade-leave-active {
   transition: opacity 0.3s ease;
 }
 
-.fade-enter-from,
-.fade-leave-to {
+.toc-fade-enter-from,
+.toc-fade-leave-to {
   opacity: 0;
 }
 
-/* Responsive Logic */
 @media (max-width: 1279px) {
   .custom-toc.desktop-toc {
     display: none;
@@ -469,20 +558,40 @@ function onScroll() {
   }
 }
 
-/* Dark mode adjustments */
-:global(.dark) .custom-toc.desktop-toc,
-:global(.dark) .mobile-toc-content {
-  background: var(--vp-c-bg);
-  border: 1px solid var(--vp-c-border);
-}
-
-/* Mobile specific positioning adjustments */
 @media (max-width: 768px) {
   .mobile-toc-btn {
-    bottom: 80px; /* 20px (BackToTop bottom) + 45px (height) + 15px gap */
-    right: 20px;
+    right: calc(20px + env(safe-area-inset-right, 0px));
+    bottom: calc(80px + env(safe-area-inset-bottom, 0px));
     width: 45px;
     height: 45px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :global(html) {
+    scroll-behavior: auto !important;
+  }
+
+  .mobile-toc-btn,
+  .close-btn,
+  .toc-content a,
+  .mobile-toc-content a,
+  .mobile-toc-content,
+  .toc-fade-enter-active,
+  .toc-fade-leave-active {
+    animation: none;
+    transition: none;
+  }
+
+  .mobile-toc-btn:hover {
+    transform: none;
+  }
+}
+
+@media print {
+  .custom-toc.desktop-toc,
+  .mobile-toc-container {
+    display: none !important;
   }
 }
 </style>

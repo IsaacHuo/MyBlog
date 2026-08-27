@@ -5,7 +5,9 @@
         <a
           href="https://www.xiaohongshu.com/user/profile/6767de890000000018017ac0"
           target="_blank"
+          rel="noopener noreferrer"
           class="avatar-link"
+          :aria-label="isZh ? '访问霍玮放的小红书主页' : 'Visit Huo Weifang on Xiaohongshu'"
         >
           <img
             src="/avatar.jpg"
@@ -24,10 +26,10 @@
       </p>
       <p class="about-description">
         <template v-if="isZh">
-          这里存放了一些文章、一些项目，<br>也收集一些不成篇的片段。
+          这里存放了一些正在做的项目。
         </template>
         <template v-else>
-          Here are essays and projects,<br>alongside fragments that do not need to become either.
+          Here are some projects I am working on.
         </template>
       </p>
       <p class="about-description">
@@ -61,28 +63,6 @@
             </a>
           </div>
         </section>
-
-        <section class="showcase-section">
-          <div class="showcase-heading">
-            <h2>{{ isZh ? '最新笔记' : 'Latest notes' }}</h2>
-            <a :href="withBase(isZh ? '/zh/blog/' : '/en/blog/')">
-              {{ isZh ? '全部文章' : 'View all' }}
-            </a>
-          </div>
-          <div class="showcase-list">
-            <a
-              v-for="note in latestNotes"
-              :key="note.url"
-              class="showcase-item"
-              :href="withBase(note.url)"
-            >
-              <span>
-                <strong>{{ note.frontmatter.title }}</strong>
-                <small>{{ formatDate(note.frontmatter.date) }}</small>
-              </span>
-            </a>
-          </div>
-        </section>
       </div>
 
       <div class="about-contact">
@@ -109,7 +89,7 @@
               </button>
               <span
                 class="copy-status"
-                :class="{ visible: emailCopyState === 'copied' }"
+                :class="{ visible: emailCopyState !== 'idle' }"
                 aria-live="polite"
               >
                 {{ emailCopyStatusText }}
@@ -159,9 +139,15 @@
           <form
             class="mail-compose"
             :class="isZh ? 'mail-compose-zh' : 'mail-compose-en'"
+            :aria-label="isZh ? '撰写邮件' : 'Compose an email'"
             @submit.prevent="sendEmail"
           >
+            <label
+              class="visually-hidden"
+              for="homepage-mail-body"
+            >{{ isZh ? '邮件内容' : 'Email message' }}</label>
             <textarea
+              id="homepage-mail-body"
               v-model="mailBody"
               rows="1"
               :placeholder="isZh ? '联系我...' : 'Write your message...'"
@@ -185,25 +171,24 @@
 
 <script setup lang="ts">
 import { useData, withBase } from 'vitepress'
-import { computed, ref } from 'vue'
-import { data as blogPosts } from '../data/blogPosts.data.js'
-
-type BlogPost = {
-  url: string
-  frontmatter: Record<string, any>
-}
+import { computed, onBeforeUnmount, ref } from 'vue'
 
 const { site, page } = useData()
-const isZh = site.value.lang === 'zh-CN' || page.value.relativePath.startsWith('zh/')
+const isZh = computed(() => site.value.lang === 'zh-CN' || page.value.relativePath.startsWith('zh/'))
 const emailAddress = 'huoweifang@foxmail.com'
 const xiaohongshuUrl = 'https://www.xiaohongshu.com/user/profile/6767de890000000018017ac0'
 const githubUrl = 'https://github.com/IsaacHuo'
 const mailBody = ref('')
-const emailCopyState = ref<'idle' | 'copied'>('idle')
+const emailCopyState = ref<'idle' | 'copied' | 'error'>('idle')
+let copyStatusTimer: ReturnType<typeof setTimeout> | null = null
 
-const emailCopyStatusText = computed(() => isZh ? '已复制' : 'Copied')
+const emailCopyStatusText = computed(() => {
+  if (emailCopyState.value === 'idle') return ''
+  if (emailCopyState.value === 'error') return isZh.value ? '复制失败' : 'Copy failed'
+  return isZh.value ? '已复制' : 'Copied'
+})
 
-const featuredProjects = computed(() => isZh
+const featuredProjects = computed(() => isZh.value
   ? [
       {
         title: 'MyLeafy',
@@ -229,52 +214,43 @@ const featuredProjects = computed(() => isZh
       }
     ])
 
-const latestNotes = computed(() => {
-  const localePrefix = isZh ? '/zh/blog/' : '/en/blog/'
-  return (blogPosts as BlogPost[])
-    .filter((post) => post.url.startsWith(localePrefix))
-    .slice(0, 2)
-})
-
-const formatDate = (value?: string) => {
-  if (!value) return ''
-
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return value
-
-  return new Intl.DateTimeFormat(isZh ? 'zh-CN' : 'en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  }).format(date)
-}
-
 const sendEmail = () => {
-  const subject = encodeURIComponent(isZh ? '来自博客首页的邮件' : 'Message from blog homepage')
+  const subject = encodeURIComponent(isZh.value ? '来自博客首页的邮件' : 'Message from blog homepage')
   const body = encodeURIComponent(mailBody.value.trim())
   window.location.href = `mailto:${emailAddress}?subject=${subject}&body=${body}`
 }
 
 const copyEmail = async () => {
   try {
-    await navigator.clipboard.writeText(emailAddress)
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(emailAddress)
+    } else {
+      const textarea = document.createElement('textarea')
+      textarea.value = emailAddress
+      textarea.setAttribute('readonly', '')
+      textarea.style.position = 'fixed'
+      textarea.style.opacity = '0'
+      document.body.appendChild(textarea)
+      textarea.select()
+      const copied = document.execCommand('copy')
+      document.body.removeChild(textarea)
+      if (!copied) throw new Error('Copy command failed')
+    }
+    emailCopyState.value = 'copied'
   } catch {
-    const textarea = document.createElement('textarea')
-    textarea.value = emailAddress
-    textarea.setAttribute('readonly', '')
-    textarea.style.position = 'fixed'
-    textarea.style.opacity = '0'
-    document.body.appendChild(textarea)
-    textarea.select()
-    document.execCommand('copy')
-    document.body.removeChild(textarea)
+    emailCopyState.value = 'error'
   }
 
-  emailCopyState.value = 'copied'
-  window.setTimeout(() => {
+  if (copyStatusTimer) window.clearTimeout(copyStatusTimer)
+  copyStatusTimer = window.setTimeout(() => {
     emailCopyState.value = 'idle'
+    copyStatusTimer = null
   }, 1500)
 }
+
+onBeforeUnmount(() => {
+  if (copyStatusTimer) window.clearTimeout(copyStatusTimer)
+})
 </script>
 
 <style scoped>
@@ -392,7 +368,7 @@ const copyEmail = async () => {
 
 .home-showcase {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-xl);
   clear: both;
   padding-top: var(--space-xl);
@@ -444,7 +420,8 @@ const copyEmail = async () => {
 }
 
 .showcase-item strong,
-.showcase-item small {
+.showcase-item small,
+.showcase-item time {
   display: block;
 }
 
@@ -455,7 +432,8 @@ const copyEmail = async () => {
   line-height: 1.45;
 }
 
-.showcase-item small {
+.showcase-item small,
+.showcase-item time {
   margin-top: 2px;
   color: var(--vp-c-text-3);
   font-size: 13px;

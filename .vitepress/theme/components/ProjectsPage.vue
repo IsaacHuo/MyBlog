@@ -9,19 +9,24 @@
         :key="project.url"
         class="project-list-item"
       >
-        <span
+        <time
           v-if="project.date"
           class="project-meta"
+          :datetime="String(project.date)"
         >
           {{ formatDate(project.date) }}
-        </span>
+        </time>
         <a
           class="project-link"
           :href="resolveProjectUrl(project.url)"
-          :target="project.url.startsWith('http') ? '_blank' : undefined"
-          :rel="project.url.startsWith('http') ? 'noopener noreferrer' : undefined"
+          :target="isExternalUrl(project.url) ? '_blank' : undefined"
+          :rel="isExternalUrl(project.url) ? 'noopener noreferrer' : undefined"
         >
           {{ project.title }}
+          <span
+            v-if="isExternalUrl(project.url)"
+            class="visually-hidden"
+          >{{ isZh ? '（在新窗口打开）' : ' (opens in a new window)' }}</span>
         </a>
         <p
           v-if="project.description"
@@ -49,12 +54,18 @@ const { site, page, frontmatter } = useData()
 const isZh = computed(() => site.value.lang === 'zh-CN' || page.value.relativePath.startsWith('zh/'))
 
 const projects = computed(() => {
-  return frontmatter.value.thoughts || []
+  return Array.isArray(frontmatter.value.thoughts)
+    ? frontmatter.value.thoughts.filter(project => project?.title && project?.url)
+    : []
 })
 
 function resolveProjectUrl(url: string) {
-  if (url.startsWith('http')) return url
+  if (isExternalUrl(url)) return url
   return withBase(url)
+}
+
+function isExternalUrl(url: string) {
+  return /^(?:https?:)?\/\//i.test(String(url).trim())
 }
 
 function formatDate(value?: string) {

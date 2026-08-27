@@ -3,13 +3,12 @@
    ========================================================================== */
 
 @import url("https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&display=swap");
-@import "./kaiti-gb2312-fonts.css";
 
 /* CSS Variables */
 :root {
   /* Typography */
   --font-latin: "Lora", Georgia, "Times New Roman";
-  --font-zh: var(--font-latin), "BlogKaitiGB2312Site", "BlogKaitiGB2312Chunked", "KaiTi", "楷体", "华文楷体", "STKaiti", "Kaiti SC", serif;
+  --font-zh: "Lora", "Songti SC", STSong, "Noto Serif CJK SC", "Source Han Serif SC", SimSun, serif;
   --vp-font-family-base: var(--font-zh) !important;
   --vp-font-family-mono: Menlo, Monaco, Consolas, "Liberation Mono", monospace !important;
 
@@ -59,7 +58,7 @@
 }
 
 html.mac[lang="zh-CN"] {
-  --font-zh: var(--font-latin), "BlogKaitiGB2312Site", "BlogKaitiGB2312Chunked", "KaiTi", "楷体", "华文楷体", "STKaiti", "Kaiti SC", serif;
+  --font-zh: "Lora", "Songti SC", STSong, "Noto Serif CJK SC", "Source Han Serif SC", SimSun, serif;
 }
 
 /* Dark Mode Variables */
@@ -786,4 +785,19 @@ html[lang="zh-CN"] body .about-contact h3,
 html[lang="zh-CN"] body .copy-status,
 html[lang="zh-CN"] body .contact-note {
   font-weight: 400 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

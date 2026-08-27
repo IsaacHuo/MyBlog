@@ -1,8 +1,7 @@
 <template>
-  <Layout :class="{ 'is-article-page': isArticlePage, 'is-project-page': isProjectPage }">
-    <!-- 文章页脚：元信息 + 阅读量 + 评论 -->
+  <Layout :class="{ 'is-article-page': isContentPage, 'is-project-page': isProjectPage }">
     <template
-      v-if="isArticlePage"
+      v-if="isContentPage"
       #doc-after
     >
       <div class="article-meta-container">
@@ -21,12 +20,14 @@
     <!-- 回到顶部按钮 -->
     <template #layout-bottom>
       <BackToTop />
-      <ArticleTOC v-if="isArticlePage || isProjectPage" />
+      <ArticleTOC v-if="isContentPage" />
     </template>
     <template #nav-bar-content-after>
       <a
         :class="['custom-language-link', languageLink.className]"
         :href="languageLink.href"
+        :aria-label="languageLink.label"
+        :title="languageLink.label"
         @click="handleLanguageClick"
       >
         {{ languageLink.text }}
@@ -36,6 +37,8 @@
       <a
         :class="['custom-language-link', 'nav-screen-language-link', languageLink.className]"
         :href="languageLink.href"
+        :aria-label="languageLink.label"
+        :title="languageLink.label"
         @click="handleLanguageClick"
       >
         {{ languageLink.text }}
@@ -55,7 +58,12 @@ import ArticleTOC from './components/ArticleTOC.vue'
 const { Layout } = DefaultTheme
 const { frontmatter, page, lang } = useData()
 
-const isArticlePage = computed(() => {
+const localizedPageModules = import.meta.glob('../../{zh,en}/**/*.md')
+const availableLocalizedPages = new Set(
+  Object.keys(localizedPageModules).map(path => path.replace(/^\.\.\/\.\.\//, ''))
+)
+
+const isContentPage = computed(() => {
   const path = page.value.relativePath || ''
   return (path.indexOf('blog/') !== -1 || path.indexOf('projects/') !== -1) &&
          path.indexOf('index.md') === -1
@@ -82,15 +90,37 @@ const toCanonicalViewId = (path) => {
 
 const switchLocalePath = (relativePath, targetLocale) => {
   const path = relativePath || ''
-  const withoutLocale = path.replace(/^(zh|en)\//, '').replace(/\.md$/, '')
-  const targetPath = withoutLocale === 'index' ? targetLocale : `${targetLocale}/${withoutLocale}`
-  return `/${targetPath.replace(/\/index$/, '')}${targetPath.endsWith('/index') || withoutLocale === 'index' ? '/' : ''}`
+  const withoutLocale = path.replace(/^(zh|en)\//, '')
+  const requestedPage = `${targetLocale}/${withoutLocale || 'index.md'}`
+  const targetPage = availableLocalizedPages.has(requestedPage)
+    ? requestedPage
+    : `${targetLocale}/index.md`
+
+  return `/${targetPage.replace(/index\.md$/, '').replace(/\.md$/, '')}`
 }
 
 const languageLink = computed(() => {
+  const targetLocale = isZh.value ? 'en' : 'zh'
+  const path = page.value.relativePath || ''
+  const withoutLocale = path.replace(/^(zh|en)\//, '')
+  const hasTranslation = availableLocalizedPages.has(`${targetLocale}/${withoutLocale}`)
+  const fallbackLabel = isZh.value
+    ? 'This page has no English translation. Go to the English homepage.'
+    : '此页面暂无中文翻译，前往中文首页。'
+
   return isZh.value
-    ? { text: 'EN', href: switchLocalePath(page.value.relativePath, 'en'), className: 'language-link-en' }
-    : { text: '中文', href: switchLocalePath(page.value.relativePath, 'zh'), className: 'language-link-zh' }
+    ? {
+        text: 'EN',
+        href: switchLocalePath(path, 'en'),
+        className: 'language-link-en',
+        label: hasTranslation ? 'Read this page in English' : fallbackLabel
+      }
+    : {
+        text: '中文',
+        href: switchLocalePath(path, 'zh'),
+        className: 'language-link-zh',
+        label: hasTranslation ? '阅读此页面的中文版' : fallbackLabel
+      }
 })
 
 const handleLanguageClick = (event) => {
@@ -100,7 +130,7 @@ const handleLanguageClick = (event) => {
 }
 
 const articleMetaText = computed(() => {
-  if (!isArticlePage.value) return ''
+  if (!isContentPage.value) return ''
   const parts = []
   if (frontmatter.value.date) {
     parts.push(formatArticleDate(frontmatter.value.date))
@@ -124,6 +154,7 @@ const formatArticleDate = (value) => {
     return value
   }
 }
+
 </script>
 
 <style>
