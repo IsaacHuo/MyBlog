@@ -1,3 +1,3 @@
 # Archived content
 
-Blog posts and fragments are kept here for future restoration. This directory is excluded from the public VitePress build.
+Blog posts are kept here for future restoration. This directory is excluded from the public VitePress build.
