@@ -225,6 +225,9 @@ a { color: inherit; }
 html[lang="zh-Hant"] .VPNavBarTitle .title::before { content: '霍'; font-family: var(--font-zh); }
 html[lang="zh-Hant"] .VPNavBarTitle .title::after { content: '霍瑋放'; letter-spacing: 0.16em; font-weight: 400; }
 
+/* Brand is the seal alone; the name lives in the hero */
+.VPNavBarTitle .title::after { display: none !important; }
+
 .VPNavBarMenu { display: flex !important; align-items: center; gap: clamp(18px, 3vw, 36px); }
 .VPNavBarMenu > * { margin: 0 !important; padding: 0 !important; }
 

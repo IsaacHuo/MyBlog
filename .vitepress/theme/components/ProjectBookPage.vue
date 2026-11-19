@@ -90,15 +90,26 @@
         </dl>
       </template>
 
-      <template v-else>
-        <figure class="bp-figure">
-          <img
-            :src="withBase(page.image)"
-            :alt="page.imageAlt"
-            loading="lazy"
-            draggable="false"
+      <template v-else-if="page.kind === 'detail'">
+        <div
+          class="bp-shots bp-shots-detail"
+          :data-count="page.shots.length"
+        >
+          <figure
+            v-for="shot in page.shots"
+            :key="shot.src"
+            class="bp-shot"
           >
-        </figure>
+            <img
+              :src="withBase(shot.src)"
+              :alt="shot.caption"
+              :style="{ aspectRatio: String(shot.ratio) }"
+              loading="lazy"
+              draggable="false"
+            >
+            <figcaption>{{ shot.caption }}</figcaption>
+          </figure>
+        </div>
         <ul class="bp-features">
           <li
             v-for="feature in page.features"
@@ -107,7 +118,56 @@
             {{ feature }}
           </li>
         </ul>
-        <div class="bp-links">
+      </template>
+
+      <template v-else-if="page.kind === 'gallery'">
+        <p class="bp-lead">
+          {{ page.lead }}
+        </p>
+        <div
+          class="bp-shots bp-shots-gallery"
+          :data-count="page.shots.length"
+        >
+          <figure
+            v-for="shot in page.shots"
+            :key="shot.src"
+            class="bp-shot"
+          >
+            <img
+              :src="withBase(shot.src)"
+              :alt="shot.caption"
+              :style="{ aspectRatio: String(shot.ratio) }"
+              loading="lazy"
+              draggable="false"
+            >
+            <figcaption>{{ shot.caption }}</figcaption>
+          </figure>
+        </div>
+      </template>
+
+      <template v-else-if="page.kind === 'notes'">
+        <h3 class="bp-notes-title">
+          {{ page.title }}
+        </h3>
+        <p
+          v-for="para in page.paras"
+          :key="para"
+          class="bp-para"
+        >
+          {{ para }}
+        </p>
+        <ol class="bp-points">
+          <li
+            v-for="point in page.points"
+            :key="point"
+          >
+            {{ point }}
+          </li>
+        </ol>
+        <div
+          v-if="page.links"
+          class="bp-links"
+        >
           <a
             v-for="link in page.links"
             :key="link.href"
@@ -368,28 +428,109 @@ const emit = defineEmits<{ (e: 'go', page: number): void }>()
 .bp-meta dt { color: #62675d; }
 .bp-meta dd { margin: 0; text-align: right; }
 
-/* Project detail (right page) */
-.bp-figure {
+/* Screenshots: phones and posters keep their own aspect ratio */
+.bp-shots {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 5cqw;
   width: 100%;
-  aspect-ratio: 16 / 9;
-  margin: 0;
-  overflow: hidden;
-  border: 1px solid #e2e1d6;
-  background: #f2f1ea;
 }
 
-.bp-figure img {
+.bp-shot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+}
+
+.bp-shot img {
   display: block;
   width: 100%;
-  height: 100%;
+  height: auto;
   object-fit: cover;
   object-position: top;
+  border-radius: 3.2cqw;
+  background: #f2f1ea;
+  box-shadow: 0 0 0 1px rgb(34 35 31 / 10%), 0 1.6cqw 3.4cqw -1.4cqw rgb(52 61 45 / 28%);
   pointer-events: none;
+}
+
+.bp-shot figcaption {
+  margin-top: 2.4cqw;
+  color: #62675d;
+  font-size: max(11px, 3.2cqw);
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.bp-shots-detail .bp-shot { width: 33cqw; }
+.bp-shots-detail[data-count='1'] .bp-shot { width: 46cqw; }
+.bp-shots-detail[data-count='1'] .bp-shot img { border-radius: 0.6cqw; }
+
+.bp-shots-gallery { margin-top: 6%; gap: 4cqw; }
+.bp-shots-gallery .bp-shot { width: 26cqw; }
+.bp-shots-gallery .bp-shot:nth-child(2) { margin-top: 8cqw; }
+.bp-shots-gallery[data-count='6'] { flex-wrap: wrap; gap: 3cqw 5cqw; margin-top: 4%; }
+.bp-shots-gallery[data-count='6'] .bp-shot { width: 23cqw; margin-top: 0; }
+.bp-shots-gallery[data-count='6'] .bp-shot img { border-radius: 0.6cqw; }
+.bp-shots-gallery[data-count='4'] { flex-wrap: wrap; gap: 3cqw 8cqw; margin-top: 5%; }
+.bp-shots-gallery[data-count='4'] .bp-shot { width: 30cqw; margin-top: 0; }
+.bp-shots-gallery[data-count='4'] .bp-shot img { border-radius: 0.6cqw; }
+
+.bp-lead {
+  margin: 0;
+  font-size: 6.4cqw;
+  line-height: 1.45;
+}
+
+/* Notes page */
+.bp-notes-title {
+  margin: 0 0 5%;
+  font-size: 6.6cqw;
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+.bp-para {
+  margin: 0 0 3.4%;
+  color: #3b3d36;
+  font-size: max(12px, 3.9cqw);
+  line-height: 1.85;
+  text-indent: 2em;
+}
+
+.bp-en .bp-para { text-indent: 0; }
+
+.bp-points {
+  width: 100%;
+  margin: 3% 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: pt;
+}
+
+.bp-points li {
+  display: flex;
+  gap: 3cqw;
+  padding: 1.8cqw 0;
+  border-top: 1px solid #daddd1;
+  font-size: max(11px, 3.5cqw);
+  line-height: 1.55;
+  counter-increment: pt;
+}
+
+.bp-points li::before {
+  color: #839b69;
+  content: counter(pt, decimal-leading-zero);
+  font-variant-numeric: tabular-nums;
 }
 
 .bp-features {
   width: 100%;
-  margin: 6% 0 0;
+  margin: auto 0 0;
+  padding-top: 5%;
   padding: 0;
   list-style: none;
 }

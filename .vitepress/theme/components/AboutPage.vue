@@ -38,10 +38,22 @@
       <div class="hero-bottom zb-meta">
         <a
           class="scroll-link"
-          href="#recent"
+          href="#projects"
         >{{ isZh ? '向下探索' : 'Scroll to explore' }}<b aria-hidden="true">↓</b></a>
         <span>{{ isZh ? '用代码和 AI，把想法做成能用的东西。' : 'Turning ideas into useful things with code and AI.' }}</span>
       </div>
+    </section>
+
+    <!-- Projects as a flip-book (zhibi.fun book section) -->
+    <section
+      id="projects"
+      class="section book-section"
+    >
+      <div class="zb-label">
+        <span>01 / {{ isZh ? '项目' : 'Projects' }}</span>
+        <a :href="withBase(isZh ? '/zh/projects/' : '/en/projects/')">{{ isZh ? '全部项目' : 'View all' }} →</a>
+      </div>
+      <ProjectBook :is-zh="isZh" />
     </section>
 
     <!-- Latest posts as tilted paper cards (zhibi.fun card table) -->
@@ -51,7 +63,7 @@
       class="section"
     >
       <div class="zb-label">
-        <span>01 / {{ isZh ? '最近的文章' : 'Recent posts' }}</span>
+        <span>02 / {{ isZh ? '最近的文章' : 'Recent posts' }}</span>
         <a :href="withBase(isZh ? '/zh/blog/' : '/en/blog/')">{{ isZh ? '全部文章' : 'All posts' }} →</a>
       </div>
       <div class="section-heading">
@@ -81,18 +93,6 @@
           <span class="card-foot">{{ isZh ? '读下去' : 'Read on' }} →</span>
         </a>
       </div>
-    </section>
-
-    <!-- Projects as a flip-book (zhibi.fun book section) -->
-    <section
-      id="projects"
-      class="section book-section"
-    >
-      <div class="zb-label">
-        <span>{{ recentPosts.length ? '02' : '01' }} / {{ isZh ? '项目' : 'Projects' }}</span>
-        <a :href="withBase(isZh ? '/zh/projects/' : '/en/projects/')">{{ isZh ? '全部项目' : 'View all' }} →</a>
-      </div>
-      <ProjectBook :is-zh="isZh" />
     </section>
 
     <!-- Closing: big glyph + contact list (zhibi.fun closing grid) -->

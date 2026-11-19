@@ -100,6 +100,10 @@ const pages = computed<Record<string, any>[]>(() => {
   const zh = props.isZh
   const p = (zhText: string, enText: string) => (zh ? zhText : enText)
   const base = zh ? '/zh/projects/' : '/en/projects/'
+  const L = '/project-images/myleafy/'
+  const F = '/project-images/familiar/'
+  const M = '/project-images/maptoposter/'
+  const PHONE = 0.462
   return [
     {
       kind: 'front',
@@ -126,12 +130,14 @@ const pages = computed<Record<string, any>[]>(() => {
       title: p('这一册里有', 'In this book'),
       items: [
         { no: '01', name: 'MyLeafy', desc: p('以课表为核心的校园应用', 'A timetable-centred campus app'), page: 3 },
-        { no: '02', name: 'Familiar', desc: p('iPhone 上的原生 AI 工作台', 'A native AI workbench for iPhone'), page: 5 },
-        { no: '03', name: 'MapToPoster', desc: p('把地方变成地图海报', 'Turn places into map posters'), page: 7 }
+        { no: '02', name: 'Familiar', desc: p('iPhone 上的原生 AI 工作台', 'A native AI workbench for iPhone'), page: 7 },
+        { no: '03', name: 'MapToPoster', desc: p('把地方变成地图海报', 'Turn places into map posters'), page: 11 }
       ],
       note: p('更多项目见项目页。', 'More on the projects page.'),
       bottom: p('目录', 'Contents')
     },
+
+    // 01 MyLeafy
     {
       kind: 'intro',
       top: '01 / MyLeafy',
@@ -151,13 +157,42 @@ const pages = computed<Record<string, any>[]>(() => {
       kind: 'detail',
       top: p('课表 · 校园 · 我的', 'Timetable · Campus · Me'),
       topRight: 'MyLeafy',
-      image: '/project-images/leafy.png',
-      imageAlt: p('MyLeafy 应用界面', 'MyLeafy app screens'),
+      shots: [
+        { src: L + 'calendar.jpg', caption: p('课表', 'Timetable'), ratio: PHONE },
+        { src: L + 'grade.jpg', caption: p('成绩', 'Grades'), ratio: PHONE }
+      ],
       features: [
         p('以课表和学业数据为核心', 'Timetable and academic data at the core'),
-        p('教务查询：成绩、考试与学期时间线', 'Academic queries: grades, exams, term timeline'),
-        p('校园社区、日迹与共享课表', 'Campus community, daily notes, shared timetables'),
+        p('教务查询：成绩、考试与学期时间线', 'Grades, exams and the term timeline'),
         p('从客户端、后端到运营后台独立完成', 'Client, backend and admin built end to end')
+      ],
+      bottom: 'MyLeafy'
+    },
+    {
+      kind: 'gallery',
+      top: p('校园 · 社区', 'Campus · Community'),
+      topRight: 'MyLeafy',
+      lead: p('课表之外，是一整个校园。', 'Beyond the timetable, a whole campus.'),
+      shots: [
+        { src: L + 'community.jpg', caption: p('校园社区', 'Community'), ratio: PHONE },
+        { src: L + 'sharecal.jpg', caption: p('共享课表', 'Shared timetable'), ratio: PHONE },
+        { src: L + 'xuefen.jpg', caption: p('学分统计', 'Credits'), ratio: PHONE }
+      ],
+      bottom: 'MyLeafy'
+    },
+    {
+      kind: 'notes',
+      top: p('为什么做', 'Why it exists'),
+      topRight: 'MyLeafy',
+      title: p('把散落的教务，收进一个应用。', 'One app for scattered campus data.'),
+      paras: [
+        p('课表、成绩和考试散落在教务系统的各个角落，在手机上查一次要登录好几回。', 'Timetables, grades and exams hide in different corners of the school system, each behind another login.'),
+        p('MyLeafy 以学校教务为权威来源，个人记录留在本机，再用社区和共享课表把同学连起来。', 'MyLeafy treats the school system as the source of truth, keeps personal records on device, and links classmates through community and shared timetables.')
+      ],
+      points: [
+        p('iOS 与 Android 双端原生，独立发版', 'Native on iOS and Android, released independently'),
+        p('自建 Node 后端与运营后台', 'Own Node backend and admin console'),
+        p('服务北京林业大学 5000+ 同学', 'Used by 5000+ students at BJFU')
       ],
       links: [
         { label: p('项目详情', 'Details'), href: base + 'leafy', external: false },
@@ -165,6 +200,8 @@ const pages = computed<Record<string, any>[]>(() => {
       ],
       bottom: 'MyLeafy'
     },
+
+    // 02 Familiar
     {
       kind: 'intro',
       top: '02 / Familiar',
@@ -184,21 +221,52 @@ const pages = computed<Record<string, any>[]>(() => {
       kind: 'detail',
       top: p('文件 · 对话 · 设置', 'Files · Chat · Settings'),
       topRight: 'Familiar',
-      image: '/project-images/familiar.png',
-      imageAlt: p('Familiar 应用界面', 'Familiar app screens'),
+      shots: [
+        { src: F + 'chat.png', caption: p('对话', 'Chat'), ratio: PHONE },
+        { src: F + 'tools.png', caption: p('工具', 'Tools'), ratio: PHONE }
+      ],
       features: [
         p('多服务商对话，密钥只存在设备钥匙串', 'Multi-provider chat, keys stay in Keychain'),
         p('Markdown、代码、数学、Mermaid 与朗读', 'Markdown, code, math, Mermaid and read-aloud'),
-        p('Projects、Memory 与 Skills', 'Projects, Memory and Skills'),
-        p('本地写入有回执与撤销，删除必须确认', 'Receipts and undo for writes, confirmed deletes')
-      ],
-      links: [
-        { label: p('项目详情', 'Details'), href: base + 'familiar', external: false },
-        { label: p('官网', 'Website'), href: 'https://isaachuo.github.io/Familiar/', external: true },
-        { label: 'GitHub', href: GH + 'Familiar', external: true }
+        p('Projects、Memory 与 Skills', 'Projects, Memory and Skills')
       ],
       bottom: 'Familiar'
     },
+    {
+      kind: 'gallery',
+      top: p('项目 · 权限 · 存储', 'Projects · Permissions · Storage'),
+      topRight: 'Familiar',
+      lead: p('文件、权限与数据，都留在本机。', 'Files, permissions and data stay on device.'),
+      shots: [
+        { src: F + 'drawer.png', caption: p('项目与会话', 'Projects'), ratio: PHONE },
+        { src: F + 'permissions.png', caption: p('权限确认', 'Permissions'), ratio: PHONE },
+        { src: F + 'storage.png', caption: p('本地存储', 'Storage'), ratio: PHONE }
+      ],
+      bottom: 'Familiar'
+    },
+    {
+      kind: 'notes',
+      top: p('设计原则', 'Principles'),
+      topRight: 'Familiar',
+      title: p('没有账号，也没有后端。', 'No account, no backend.'),
+      paras: [
+        p('填入自己的密钥，请求直接发往所选的服务商，对话记录只保存在设备上。', 'Bring your own key; requests go straight to the provider and history stays on the phone.'),
+        p('一个 Agent 按需加载工具：网页、Apple 原生能力、MCP 与内置文档环境。', 'One agent loads tools on demand: web, native Apple capabilities, MCP and a bundled document environment.')
+      ],
+      points: [
+        p('本地写入有回执，可以撤销', 'Local writes come with receipts and undo'),
+        p('每一次删除都必须确认', 'Every delete needs confirmation'),
+        p('Files、Chat、Settings 三个标签', 'Three tabs: Files, Chat, Settings')
+      ],
+      links: [
+        { label: p('官网', 'Website'), href: 'https://isaachuo.github.io/Familiar/', external: true },
+        { label: 'GitHub', href: GH + 'Familiar', external: true },
+        { label: p('项目详情', 'Details'), href: base + 'familiar', external: false }
+      ],
+      bottom: 'Familiar'
+    },
+
+    // 03 MapToPoster
     {
       kind: 'intro',
       top: '03 / MapToPoster',
@@ -218,21 +286,51 @@ const pages = computed<Record<string, any>[]>(() => {
       kind: 'detail',
       top: p('搜索 · 取景 · 导出', 'Search · Frame · Export'),
       topRight: 'MapToPoster',
-      image: '/project-images/maptoposter.png',
-      imageAlt: p('MapToPoster 海报示例', 'MapToPoster sample poster'),
+      shots: [
+        { src: M + 'sample-poster.webp', caption: p('北京 · 默认主题', 'Beijing, default theme'), ratio: 1132 / 1600 }
+      ],
       features: [
         p('搜索全球地点，或直接输入经纬度', 'Search anywhere, or enter coordinates'),
-        p('多套主题：极简、复古、赛博朋克、自然', 'Themes: minimal, vintage, cyberpunk, nature'),
         p('控制道路、水域与公园图层', 'Toggle roads, water and park layers'),
         p('PNG 支持 300 DPI 打印分辨率', '300 DPI PNG for printing')
       ],
-      links: [
-        { label: p('项目详情', 'Details'), href: base + 'maptoposter', external: false },
-        { label: p('在线体验', 'Live demo'), href: 'https://huggingface.co/spaces/isaachwf/MapToPoster', external: true },
-        { label: 'GitHub', href: GH + 'maptoposter', external: true }
+      bottom: 'MapToPoster'
+    },
+    {
+      kind: 'gallery',
+      top: p('主题', 'Themes'),
+      topRight: 'MapToPoster',
+      lead: p('同一套流程，不同的城市与主题。', 'One pipeline, many cities and themes.'),
+      shots: [
+        { src: M + 'beijing-japanese-ink.webp', caption: p('北京 · 水墨', 'Beijing, ink'), ratio: 0.67 },
+        { src: M + 'guangzhou-pastel-dream.webp', caption: p('广州 · 粉彩', 'Guangzhou, pastel'), ratio: 0.67 },
+        { src: M + 'guilin-forest.webp', caption: p('桂林 · 森林', 'Guilin, forest'), ratio: 0.67 },
+        { src: M + 'hong-kong-ocean.webp', caption: p('香港 · 海洋', 'Hong Kong, ocean'), ratio: 0.67 }
       ],
       bottom: 'MapToPoster'
     },
+    {
+      kind: 'notes',
+      top: p('从搜索到打印', 'From search to print'),
+      topRight: 'MapToPoster',
+      title: p('先框出地方，再决定它的样子。', 'Frame the place, then choose its look.'),
+      paras: [
+        p('搜索城市、街区、校园或一组坐标，在交互地图上框出范围，再选主题与版式。', 'Search a city, campus or coordinates, frame it on an interactive map, then pick a theme and layout.'),
+        p('点击“开始生成”后才抓取地图数据，每个阶段都显示进度；改变比例时，选好的范围不会被裁掉。', 'Map data is fetched only when you generate, with progress for each stage; changing the ratio never crops your selection.')
+      ],
+      points: [
+        p('FastAPI 后端与 React 编辑器', 'FastAPI backend, React editor'),
+        p('十余种比例，横竖版都可以', 'A dozen ratios, portrait or landscape'),
+        p('免费 CPU 上运行，首次访问需要唤醒', 'Runs on a free CPU; first visit may wake it up')
+      ],
+      links: [
+        { label: p('在线体验', 'Live demo'), href: 'https://huggingface.co/spaces/isaachwf/MapToPoster', external: true },
+        { label: 'GitHub', href: GH + 'maptoposter', external: true },
+        { label: p('项目详情', 'Details'), href: base + 'maptoposter', external: false }
+      ],
+      bottom: 'MapToPoster'
+    },
+
     {
       kind: 'back',
       hard: true,
@@ -248,8 +346,8 @@ const pages = computed<Record<string, any>[]>(() => {
 const chapters = computed(() => [
   { label: props.isZh ? '封面' : 'Cover', page: 0 },
   { label: 'MyLeafy', page: 3 },
-  { label: 'Familiar', page: 5 },
-  { label: 'MapToPoster', page: 7 }
+  { label: 'Familiar', page: 7 },
+  { label: 'MapToPoster', page: 11 }
 ])
 
 const source = ref<HTMLElement | null>(null)
