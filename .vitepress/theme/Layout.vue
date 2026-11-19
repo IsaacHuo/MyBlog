@@ -5,17 +5,33 @@
       #doc-after
     >
       <div class="article-meta-container">
-        <span>{{ articleMetaText }}</span>
-        <ViewCounter
-          :id="pageViewId"
-          :key="pageViewId"
-          :legacy-ids="legacyPageViewIds"
-          :is-zh="isZh"
-        />
+        <span class="article-seal zb-stamp">{{ isZh ? '終' : 'Fin' }}</span>
+        <span class="article-sign">{{ isZh ? '感謝閱讀。' : 'Thanks for reading.' }}</span>
+        <span class="article-meta-line">
+          <span>{{ articleMetaText }}</span>
+          <ViewCounter
+            :id="pageViewId"
+            :key="pageViewId"
+            :legacy-ids="legacyPageViewIds"
+            :is-zh="isZh"
+          />
+        </span>
       </div>
       <div class="article-comments-section">
         <Comments />
       </div>
+    </template>
+    <template
+      v-if="isContentPage"
+      #doc-before
+    >
+      <p class="article-eyebrow zb-label">
+        <span>{{ articleKind }}</span>
+        <span>{{ articleMetaText }}</span>
+      </p>
+    </template>
+    <template #nav-bar-content-before>
+      <HeaderClock />
     </template>
     <!-- 回到顶部按钮 -->
     <template #layout-bottom>
@@ -54,6 +70,7 @@ import { computed } from 'vue'
 import BackToTop from './components/BackToTop.vue'
 import Comments from './components/Comments.vue'
 import ArticleTOC from './components/ArticleTOC.vue'
+import HeaderClock from './components/HeaderClock.vue'
 
 const { Layout } = DefaultTheme
 const { frontmatter, page, lang } = useData()
@@ -74,7 +91,7 @@ const isProjectPage = computed(() => {
   return path.indexOf('projects/') !== -1 && path.indexOf('index.md') === -1
 })
 
-const isZh = computed(() => lang.value === 'zh-CN')
+const isZh = computed(() => lang.value === 'zh-Hant')
 
 const pageRelativePath = computed(() => page.value.relativePath || '')
 const pageViewId = computed(() => toCanonicalViewId(pageRelativePath.value))
@@ -129,6 +146,13 @@ const handleLanguageClick = (event) => {
   window.location.assign(languageLink.value.href)
 }
 
+const articleKind = computed(() => {
+  if (isProjectPage.value) return isZh.value ? '項目 / PROJECT' : 'PROJECT'
+  const category = frontmatter.value.category
+  if (category) return isZh.value ? `${category} / ESSAY` : String(category).toUpperCase()
+  return isZh.value ? '文章 / ESSAY' : 'ESSAY'
+})
+
 const articleMetaText = computed(() => {
   if (!isContentPage.value) return ''
   const parts = []
@@ -145,7 +169,7 @@ const formatArticleDate = (value) => {
   try {
     const date = new Date(value)
     if (Number.isNaN(date.getTime())) return value
-    return new Intl.DateTimeFormat(isZh.value ? 'zh-CN' : 'en-US', {
+    return new Intl.DateTimeFormat(isZh.value ? 'zh-Hant' : 'en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric'
@@ -158,24 +182,49 @@ const formatArticleDate = (value) => {
 </script>
 
 <style>
+.article-eyebrow {
+  margin: 0 0 0.5rem !important;
+  font-size: 0.9375rem;
+}
+
 .article-meta-container {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 18px;
+  align-items: center;
+  margin-top: 3.5rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--rule-strong);
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.article-seal {
+  grid-row: 1 / 3;
+  font-size: 1.3rem;
+}
+
+.article-sign {
+  color: var(--ink);
+  font-size: 1.15rem;
+  letter-spacing: 0.06em;
+}
+
+.article-meta-line {
+  display: inline-flex;
+  flex-wrap: wrap;
   align-items: baseline;
   gap: 6px;
-  flex-wrap: wrap;
-  color: var(--vp-c-text-3);
-  font-size: 0.95rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--vp-c-divider);
 }
 
 .article-meta-container :deep(.view-count) {
-  font-size: 0.95rem;
   margin-top: 0;
+  font-size: 0.95rem;
 }
 
 .article-comments-section {
   margin-top: 2rem;
-  padding-top: 2rem;
+  padding-top: 1rem;
 }
 </style>

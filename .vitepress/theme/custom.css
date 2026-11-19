@@ -1,45 +1,55 @@
 /* ==========================================================================
-   1. FONTS & TYPOGRAPHY
+   Blog theme — Zhibi (稚筆) visual language
+   snow paper · ink · moss green · hairline rules · paper cards · stamps
    ========================================================================== */
 
-@import url("https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&display=swap");
-
-/* CSS Variables */
 :root {
-  /* Typography */
-  --font-latin: "Lora", Georgia, "Times New Roman";
-  --font-zh: "Lora", "Songti SC", STSong, "Noto Serif CJK SC", "Source Han Serif SC", SimSun, serif;
-  --vp-font-family-base: var(--font-zh) !important;
-  --vp-font-family-mono: Menlo, Monaco, Consolas, "Liberation Mono", monospace !important;
+  /* Palette */
+  --paper: #fffafa;
+  --paper-card: #faf9f1;
+  --paper-soft: #f4f3ea;
+  --ink: #22231f;
+  --ink-2: #3b3d36;
+  --muted: #596052;
+  --faint: #85897e;
+  --rule: #d8d8ce;
+  --rule-strong: #a5a69d;
+  --marker: #839b69;
+  --marker-deep: #4d5e3d;
+  --marker-soft: #dce5cf;
+  --card-shadow: 0 4px 16px rgb(57 67 55 / 7%);
 
-  /* Font Sizes */
-  --vp-font-size-xs: 0.85rem;
-  --vp-font-size-sm: 1rem;
+  /* Typography: Lora first so Latin glyphs come from Lora, CJK falls
+     through to the edukai Traditional Kai subsets. */
+  --font-latin: "Lora", Georgia, "Times New Roman", serif;
+  --font-zh: "Lora", "BlogEdukaiSite", "BlogEdukai", "TW-Kai", "BiauKai", "DFKai-SB", "Kaiti TC", serif;
+  --font-mono: Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  --vp-font-family-base: var(--font-latin);
+  --vp-font-family-mono: var(--font-mono);
+
   --vp-font-size-md: 1.12rem;
-  --vp-font-size-lg: 1.28rem;
-  --vp-font-size-xl: 1.6rem;
-  --vp-font-size-2xl: 2.1rem;
-  --vp-font-size-3xl: 3.1rem;
 
-  /* Minimalist Color Palette - Light Mode */
-  --vp-c-brand-1: #111111;
-  --vp-c-brand-2: #111111;
-  --vp-c-brand-3: #111111;
-  --vp-c-brand-soft: #f8f9fa;
+  /* VitePress tokens mapped onto the palette */
+  --vp-c-brand-1: var(--ink);
+  --vp-c-brand-2: var(--marker-deep);
+  --vp-c-brand-3: var(--marker);
+  --vp-c-brand-soft: var(--marker-soft);
+  --vp-c-bg: var(--paper);
+  --vp-c-bg-alt: var(--paper);
+  --vp-c-bg-soft: var(--paper-soft);
+  --vp-c-bg-mute: #eeeee7;
+  --vp-c-bg-elv: var(--paper);
+  --vp-c-text-1: var(--ink);
+  --vp-c-text-2: var(--ink-2);
+  --vp-c-text-3: var(--muted);
+  --vp-c-border: var(--rule);
+  --vp-c-divider: var(--rule);
+  --vp-c-gutter: var(--rule);
+  --vp-nav-height: 76px;
+  --vp-code-block-bg: #f3f2ea;
+  --vp-code-bg: #eeeee4;
+  --vp-code-color: var(--ink-2);
 
-  --vp-c-bg: #ffffff;
-  --vp-c-bg-soft: #fafbfc;
-  --vp-c-bg-mute: #f6f8fa;
-  --vp-c-bg-alt: #ffffff;
-
-  --vp-c-text-1: #111111;
-  --vp-c-text-2: #111111;
-  --vp-c-text-3: #111111;
-
-  --vp-c-border: #e1e4e8;
-  --vp-c-divider: #e1e4e8;
-
-  /* Spacing System */
   --space-xs: 0.5rem;
   --space-sm: 0.75rem;
   --space-md: 1rem;
@@ -48,756 +58,439 @@
   --space-2xl: 3rem;
   --space-3xl: 4rem;
 
-  /* Layout */
-  --content-max-width: 800px;
-  /* Unified article reading width. Single owner of article width; shared by
-     essays and projects. On smaller viewports the column simply fills the
-     available space below this cap. */
   --article-content-width: 700px;
   --nav-content-width: 1180px;
+  --site-heading-scroll-offset: 6rem;
+  --site-focus-ring: var(--marker-deep);
 }
 
-html.mac[lang="zh-CN"] {
-  --font-zh: "Lora", "Songti SC", STSong, "Noto Serif CJK SC", "Source Han Serif SC", SimSun, serif;
-}
-
-/* Dark Mode Variables */
 .dark {
-  --vp-c-brand-1: #e8e8e8;
-  --vp-c-brand-2: #cccccc;
-  --vp-c-brand-3: #999999;
-  --vp-c-brand-soft: #2a2a2a;
-
-  --vp-c-bg: #0f0f0f;
-  --vp-c-bg-soft: #1a1a1a;
-  --vp-c-bg-mute: #242424;
-  --vp-c-bg-alt: #0f0f0f;
-
-  --vp-c-text-1: #e8e8e8;
-  --vp-c-text-2: #cccccc;
-  --vp-c-text-3: #999999;
-
-  --vp-c-border: #333333;
-  --vp-c-divider: #333333;
-}
-
-html,
-body,
-button,
-input,
-textarea,
-select {
-  font-family: var(--vp-font-family-base) !important;
-}
-
-html[lang="zh-CN"],
-html[lang="zh-CN"] body {
-  font-family: var(--font-zh), serif !important;
-}
-
-html[lang="zh-CN"] .VPDoc,
-html[lang="zh-CN"] .vp-doc,
-html[lang="zh-CN"] .about-layout,
-html[lang="zh-CN"] .about-layout :where(:not(pre, code, kbd, samp, svg, svg *)) {
-  font-family: var(--font-zh), serif !important;
-}
-
-html[lang="en"],
-html[lang="en"] body {
-  font-family: var(--font-latin), serif !important;
-}
-
-.giscus,
-.giscus-frame,
-.giscus * {
-  font-family: var(--vp-font-family-base) !important;
+  --paper: #1c1d19;
+  --paper-card: #24251f;
+  --paper-soft: #24251f;
+  --ink: #ebe8dc;
+  --ink-2: #d6d3c6;
+  --muted: #a6aa9b;
+  --faint: #8a8e80;
+  --rule: #3a3c34;
+  --rule-strong: #575a4f;
+  --marker: #a3b98a;
+  --marker-deep: #bcd0a5;
+  --marker-soft: #33402a;
+  --card-shadow: 0 4px 16px rgb(0 0 0 / 30%);
+  --vp-c-bg-mute: #2a2b25;
+  --vp-code-block-bg: #23241f;
+  --vp-code-bg: #2c2d27;
 }
 
 /* ==========================================================================
-   2. GLOBAL RESETS & COMPATIBILITY
+   1. BASE
    ========================================================================== */
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 html {
   scroll-behavior: smooth;
-  scrollbar-gutter: stable both-edges;
-  width: 100%;
-  zoom: 100%;
-  transform: none;
-  transform-origin: initial;
+  scrollbar-gutter: stable;
   font-synthesis: none;
 }
 
 body {
-  width: 100%;
   min-height: 100vh;
   font-size: var(--vp-font-size-md);
-  line-height: 1.7;
-  color: var(--vp-c-text-1);
-  background: var(--vp-c-bg);
+  line-height: 1.75;
+  color: var(--ink);
+  background: var(--paper);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-y: scroll;
-  /* Maintain scrollbar gap */
 }
 
-/* Hide Horizontal Rules */
-hr {
+html, body, button, input, textarea, select { font-family: var(--font-latin); }
+
+/* Chinese pages: every text node uses the Kai stack at regular weight
+   (edukai ships one weight; synthetic bold would smear the brush strokes). */
+html[lang="zh-Hant"] {
+  --vp-font-family-base: var(--font-zh);
+}
+
+html[lang="zh-Hant"] body,
+html[lang="zh-Hant"] body :where(:not(pre, code, kbd, samp, svg, svg *)) {
+  font-family: var(--font-zh);
+}
+
+html[lang="zh-Hant"] body :where(h1, h2, h3, h4, h5, h6, strong, b, th, .VPNavBarMenuLink) {
+  font-weight: 400;
+}
+
+.giscus, .giscus-frame { font-family: var(--vp-font-family-base); }
+
+::selection { background: #d8e6c1; color: #22231f; }
+
+a { color: inherit; }
+
+.vp-doc a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--marker);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.vp-doc a:hover {
+  color: var(--marker-deep);
+  text-decoration-color: var(--marker-deep);
+}
+
+:focus-visible { outline: 2px solid var(--site-focus-ring); outline-offset: 3px; }
+
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+/* Shared Zhibi primitives used by the page components */
+.zb-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule-strong);
+  color: var(--muted);
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  letter-spacing: 0.04em;
+}
+
+.zb-stamp {
+  display: inline-block;
+  padding: 6px 7px;
+  border: 1px solid #a1ad90;
+  color: #82986c;
+  font-size: 1rem;
+  line-height: 1.1;
+  writing-mode: vertical-rl;
+  letter-spacing: 0.1em;
+  transform: rotate(8deg);
+}
+
+.dark .zb-stamp { border-color: var(--marker); color: var(--marker); }
+
+/* ==========================================================================
+   2. NAVIGATION
+   ========================================================================== */
+
+.VPNav, .VPNavBar {
+  background: var(--paper) !important;
+  backdrop-filter: none;
+}
+
+.VPNavBar { border-bottom: 1px solid var(--rule) !important; }
+.VPNavBar .divider, .VPNavBar .divider-line { display: none !important; }
+
+.VPNavBar .container { max-width: var(--nav-content-width) !important; margin: 0 auto !important; }
+.VPNavBar .content-body { background: transparent !important; }
+
+/* Brand: circled seal + name + small caption */
+.VPNavBarTitle .title span { display: none !important; }
+
+.VPNavBarTitle .title {
+  gap: 12px;
+  border-bottom: 0 !important;
+}
+
+.VPNavBarTitle .title::before {
+  content: 'H';
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--ink);
+  border-radius: 50%;
+  font-size: 20px;
+  line-height: 1;
+  font-weight: 400;
+}
+
+.VPNavBarTitle .title::after {
+  content: 'Huo Weifang';
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+html[lang="zh-Hant"] .VPNavBarTitle .title::before { content: '霍'; font-family: var(--font-zh); }
+html[lang="zh-Hant"] .VPNavBarTitle .title::after { content: '霍瑋放'; letter-spacing: 0.16em; font-weight: 400; }
+
+.VPNavBarMenu { display: flex !important; align-items: center; gap: clamp(18px, 3vw, 36px); }
+.VPNavBarMenu > * { margin: 0 !important; padding: 0 !important; }
+
+.VPNavBarMenuLink {
+  position: relative;
+  padding: 0 !important;
+  font-size: 17px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.06em;
+  color: var(--ink) !important;
+  white-space: nowrap;
+}
+
+html[lang="zh-Hant"] .VPNavBarMenuLink { font-size: 18px !important; letter-spacing: 0.14em; }
+
+.VPNavBarMenuLink::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0.14em;
+  bottom: 18px;
+  height: 1px;
+  background: var(--marker);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+
+.VPNavBarMenuLink:hover::after,
+.VPNavBarMenuLink.active::after { transform: scaleX(1); }
+.VPNavBarMenuLink.active { color: var(--marker-deep) !important; }
+
+.custom-language-link {
+  order: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  height: 30px;
+  margin-left: 24px;
+  padding: 0 10px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  font-size: 14px !important;
+  letter-spacing: 0.06em;
+  color: var(--ink) !important;
+  white-space: nowrap;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.custom-language-link:hover { border-color: var(--marker); background: var(--marker-soft); }
+.custom-language-link.language-link-en { font-family: var(--font-latin) !important; }
+.custom-language-link.language-link-zh { font-family: var(--font-zh) !important; }
+
+.VPNavBarSocialLinks { order: 1; margin-left: 14px !important; }
+.VPNavBarSocialLinks::before, .VPSocialLinks::before { display: none !important; }
+.VPSocialLink { color: var(--ink) !important; }
+
+.VPNavBarTranslations, .VPNavBarSearch, .VPLocalSearchBox, .DocSearch-Button,
+.VPNavBar .search, .VPNavBarExtra, .VPNavBarHamburger, .VPNavBarAppearance {
   display: none !important;
 }
 
-/* Global Link Styles */
-a {
-  color: #4D74EB !important;
+.VPLocalNav { background: var(--paper) !important; border-bottom: 1px solid var(--rule) !important; }
+.VPLocalNav .return-to-top { display: none !important; }
+.is-article-page .VPLocalNav .return-to-top { display: block !important; }
+:not(.is-article-page) .VPLocalNav:not(:has(.menu)) { display: none !important; }
+
+@media (max-width: 959px) {
+  .VPNavBar .container { padding: 0 16px !important; }
+  .VPNavBar .content { min-width: 0 !important; padding: 0 !important; }
+  .VPNavBar .content-body { min-width: 0 !important; justify-content: flex-end !important; }
+  .VPNavBarMenu { gap: clamp(10px, 2.4vw, 18px); }
+  .VPNavBarTitle .title::after { font-size: 16px; }
 }
 
-a:hover {
-  color: #3A5BC7 !important;
+@media (max-width: 599px) {
+  :root { --vp-nav-height: 64px; }
+  .VPNavBarTitle .title { gap: 8px; }
+  .VPNavBarTitle .title::before { width: 32px; height: 32px; font-size: 17px; }
+  .VPNavBarTitle .title::after { display: none; }
+  .VPNavBarMenuLink, html[lang="zh-Hant"] .VPNavBarMenuLink { font-size: 16px !important; letter-spacing: 0.04em; }
+  .VPNavBarMenuLink::after { bottom: 14px; }
+  .custom-language-link { min-width: 0; height: 28px; margin-left: 10px; padding: 0 8px; font-size: 13px !important; }
+  .VPNavBarSocialLinks { margin-left: 4px !important; }
+  .VPNavBarSocialLinks .VPSocialLink { width: 28px; height: 28px; }
+  .nav-view-counter { display: none !important; }
 }
 
-a:visited {
-  color: #4D74EB !important;
-}
-
-/* Ensure inherit color for navigation and UI elements */
-.VPNav a,
-.VPNavBar a,
-.sidebar-nav a,
-.outline a,
-.post-title a {
-  color: inherit !important;
+@media (max-width: 379px) {
+  .VPNavBar .container { padding: 0 10px !important; }
+  .VPNavBarMenu { gap: 6px; }
+  .VPNavBarMenuLink, html[lang="zh-Hant"] .VPNavBarMenuLink { font-size: 15px !important; }
 }
 
 /* ==========================================================================
-   3. LAYOUT & CONTAINER
+   3. PAGE & ARTICLE LAYOUT
    ========================================================================== */
 
-/* Unified Article Layout (essays and projects share this single system)
-   -----------------------------------------------------------------------
-   Width ownership:
+.VPContent, .VPPage { background: var(--paper); }
 
-     Viewport
-        → .VPDoc horizontal padding      page gutter (VitePress default)
-        → .content-container max-width   article reading width (--article-content-width)
-        → .vp-doc content flow           typography, no width rules
+.vp-doc { width: 100% !important; animation: zbFadeIn 0.6s ease-out; }
 
-   The default VitePress aside (outline column) is hidden entirely. The
-   visible TOC is a custom component positioned independently, so the 256px
-   aside reservation that used to push the article 128px off-center is gone.
-   No translateX, no per-page-type width, no mobile padding patches.
-   ----------------------------------------------------------------------- */
-
-.vp-doc {
-  width: 100% !important;
-  animation: fadeIn 0.6s ease-out;
-}
-
-/* The article column only centers; the content-container owns the width. */
-.is-article-page .VPDoc .aside {
-  display: none !important;
-}
+.is-article-page .VPDoc { padding-top: 56px !important; }
+.is-article-page .VPDoc .aside { display: none !important; }
 
 .is-article-page .VPDoc .content {
-  margin-left: auto !important;
-  margin-right: auto !important;
   max-width: none !important;
-  padding-left: 0 !important;
-  padding-right: 0 !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
 }
 
 .is-article-page .VPDoc .content-container {
   width: 100% !important;
   max-width: var(--article-content-width) !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
-}
-
-/* The wrapper VitePress puts around rendered markdown must not add its own
-   gutters. Page gutter comes from .VPDoc padding only, so header and body
-   always share the same left/right alignment. */
-.is-article-page .vp-doc > div:not(.outline) {
-  max-width: none !important;
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-}
-
-/* Long inline content (links, code) inside table cells wraps instead of
-   stretching the article column. The default .vp-doc table already scrolls
-   horizontally inside the column. */
-.is-article-page .vp-doc th,
-.is-article-page .vp-doc td {
-  min-width: 0;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-}
-
-
-/* ==========================================================================
-   4. NAVIGATION BAR
-   ========================================================================== */
-
-.VPNav,
-.VPNavBar {
-  border-bottom: 1px solid var(--vp-c-divider) !important;
-  backdrop-filter: none;
-  background: #ffffff !important;
-}
-
-.dark .VPNav,
-.dark .VPNavBar {
-  background: var(--vp-c-bg) !important;
-}
-
-.VPNavBar .container {
-  max-width: var(--nav-content-width) !important;
   margin: 0 auto !important;
 }
 
-/* Nav Menu Items */
-.VPNavBarMenu {
-  display: flex !important;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 20px;
-  min-width: 0;
-}
-
-.VPNavBarMenuLink,
-.nav-link {
-  justify-content: center !important;
-  width: auto;
-  margin: 0 !important;
-  padding: 0 !important;
-  font-size: 17px !important;
-  font-weight: 400 !important;
-  letter-spacing: 0 !important;
-  white-space: nowrap;
-}
-
-/* 让导航项之间只由父容器的 gap 控制，避免叠加 VitePress 默认间距。 */
-.VPNavBarMenu > * {
-  margin: 0 !important;
+.is-article-page .vp-doc > div:not(.outline) {
+  max-width: none !important;
   padding: 0 !important;
 }
 
-html[lang="en"] .VPNavBarMenuLink,
-html[lang="en"] .nav-link {
-  font-family: var(--font-latin) !important;
-  font-size: 17px !important;
-  font-weight: 400 !important;
+.is-article-page .vp-doc th,
+.is-article-page .vp-doc td { min-width: 0; overflow-wrap: anywhere; word-break: break-word; }
+
+/* Article typography */
+.vp-doc h1 {
+  margin: 0.4em 0 1.1em;
+  font-size: clamp(2rem, 5vw, 2.9rem);
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  text-align: left;
 }
 
-html[lang="zh-CN"] .VPNavBarMenuLink,
-html[lang="zh-CN"] .nav-link {
-  font-family: var(--font-zh) !important;
-  font-size: 17px !important;
-  font-weight: 400 !important;
+html[lang="zh-Hant"] .vp-doc h1 { letter-spacing: 0.04em; }
+
+.vp-doc h2 {
+  margin: 3.2rem 0 1.4rem;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule-strong);
+  font-size: 1.65rem;
+  line-height: 1.45;
+  text-align: left;
 }
 
-/* Hide Unwanted Nav Elements */
-.VPNavBarTranslations,
-.VPNavBarSearch,
-.VPAlgoliaSearchBox,
-.VPLocalSearchBox,
-.DocSearch-Button,
-.VPNavBar .search,
-.VPNavBarExtra {
-  display: none !important;
+.vp-doc h3 { margin: 2.2rem 0 0.8rem; font-size: 1.3rem; line-height: 1.5; }
+.vp-doc h2 .header-anchor, .vp-doc h3 .header-anchor { color: var(--marker); text-decoration: none; }
+
+.vp-doc p, .vp-doc li { color: var(--ink-2); font-size: var(--vp-font-size-md); line-height: 1.85; }
+html[lang="zh-Hant"] .vp-doc p, html[lang="zh-Hant"] .vp-doc li { font-size: 1.18rem; line-height: 1.95; letter-spacing: 0.02em; }
+html[lang="en"] .vp-doc p, html[lang="en"] .vp-doc li { line-height: 1.7; }
+
+.vp-doc p { margin: 0 0 1.1em; }
+.vp-doc strong { color: var(--ink); }
+
+.vp-doc blockquote {
+  margin: 1.6rem 0;
+  padding: 14px 20px;
+  border-left: 2px solid var(--marker);
+  background: var(--paper-card);
+  box-shadow: var(--card-shadow);
 }
 
-.VPNavBarAppearance {
-  display: none !important;
+.vp-doc blockquote > p { margin: 0; color: var(--muted); }
+
+.vp-doc img {
+  margin: 1.6rem auto;
+  border-radius: 2px;
+  box-shadow: 0 15px 24px rgb(52 61 45 / 8%), 0 3px 4px rgb(52 61 45 / 3%);
 }
 
-/* Custom Title Style */
-.VPNavBarTitle .title span {
-  display: none !important;
+.vp-doc hr { margin: 2.5rem 0; border: 0; border-top: 1px solid var(--rule); }
+
+.vp-doc table { border-collapse: collapse; }
+.vp-doc tr { background: transparent !important; border-top: 1px solid var(--rule); }
+.vp-doc th { background: var(--paper-soft); }
+.vp-doc th, .vp-doc td { border: 1px solid var(--rule); }
+
+.vp-doc div[class*='language-'] { border-radius: 2px; border: 1px solid var(--rule); }
+.vp-doc :not(pre) > code { border-radius: 3px; }
+
+.vp-doc .custom-block { border-radius: 2px; border: 1px solid var(--rule); background: var(--paper-card); }
+
+.is-project-page .vp-doc h1 { font-size: clamp(1.8rem, 4.5vw, 2.4rem); }
+
+/* Non-article layout:page pages share a wide container */
+.VPPage { padding: 0 !important; }
+
+.zb-page {
+  box-sizing: border-box;
+  max-width: calc(var(--nav-content-width) + 48px);
+  margin: 0 auto;
+  padding: 64px 24px 96px;
 }
 
-.VPNavBarTitle .title::after {
-  content: 'Huo Weifang';
-  font-family: var(--font-latin) !important;
-  font-size: 32px;
-  font-weight: 600;
-  color: var(--vp-c-text-1);
+.zb-page-head { margin-bottom: 56px; }
+
+.zb-page-head h1 {
+  margin: 48px 0 0;
+  color: var(--ink);
+  font-size: clamp(40px, 5.4vw, 76px);
+  font-weight: 400;
+  line-height: 1.25;
   letter-spacing: 0;
 }
 
-.custom-language-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  font-size: 17px !important;
-  font-weight: 400 !important;
-  margin-left: 28px;
-  white-space: nowrap;
+.zb-page-head p {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 1.1rem;
+  line-height: 1.8;
 }
 
-.custom-language-link.language-link-en,
-.nav-screen-language-link.language-link-en {
-  font-family: var(--font-latin) !important;
-}
-
-.custom-language-link.language-link-zh,
-.nav-screen-language-link.language-link-zh {
-  font-family: var(--font-zh) !important;
-  font-size: 17px !important;
-  font-weight: 400 !important;
-}
-
-.VPNavBarSocialLinks {
-  margin-left: 14px !important;
-  order: 1;
-}
-
-.VPNavBarMenu {
-  order: 0;
-}
-
-.custom-language-link {
-  order: 2;
-}
-
-/* Mobile Nav Toggles */
-.VPNavBarHamburger {
-  z-index: 2001 !important;
-  pointer-events: auto !important;
+@media (max-width: 767px) {
+  .zb-page { padding: 40px 20px 72px; }
+  .zb-page-head { margin-bottom: 36px; }
+  .zb-page-head h1 { margin-top: 32px; font-size: 38px; }
 }
 
 /* ==========================================================================
-   5. COMPONENT STYLES
+   4. FOOTER
    ========================================================================== */
 
-/* Typography Headers */
-.vp-doc h1 {
-  font-size: var(--vp-font-size-3xl);
-  line-height: 1.2;
-  text-align: center;
-  margin: var(--space-2xl) 0;
+.VPFooter {
+  border-top: 1px solid var(--rule) !important;
+  background: var(--paper) !important;
+  padding: 40px 24px !important;
 }
 
-.vp-doc h2 {
-  font-size: var(--vp-font-size-2xl);
-  line-height: 1.3;
-  text-align: center;
-  margin: var(--space-2xl) 0 var(--space-xl) 0;
+.VPFooter .container {
+  display: flex;
+  max-width: var(--nav-content-width);
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+  text-align: left;
 }
 
-.vp-doc h3 {
-  font-size: var(--vp-font-size-xl);
-}
+.VPFooter .message { font-size: 1.15rem; color: var(--ink); letter-spacing: 0.06em; }
+.VPFooter .copyright { font-size: 0.875rem; color: var(--muted); letter-spacing: 0.04em; }
 
-/* Paragraphs */
-.vp-doc p,
-.vp-doc li {
-  font-size: var(--vp-font-size-md);
-  line-height: 1.6;
-  color: var(--vp-c-text-2);
-  margin-bottom: var(--space-md);
-}
-
-/* English Content Compactness */
-html[lang="en"] .vp-doc p,
-html[lang="en"] .vp-doc li {
-  line-height: 1.4 !important;
-  margin-bottom: calc(var(--space-sm) * 0.8) !important;
-}
-
-.is-article-page .vp-doc h1 {
-  font-size: 2.35rem;
-}
-
-.is-article-page .vp-doc p,
-.is-article-page .vp-doc li {
-  line-height: 1.5 !important;
-}
-
-html[lang="en"] .is-article-page .vp-doc p,
-html[lang="en"] .is-article-page .vp-doc li {
-  line-height: 1.35 !important;
-}
-
-.is-project-page .vp-doc h1 {
-  font-size: 1.95rem;
-}
-
-html[lang="zh-CN"] .is-project-page .vp-doc,
-html[lang="zh-CN"] .is-project-page .vp-doc :where(:not(pre, code, kbd, samp, svg, svg *)) {
-  font-family: var(--font-zh) !important;
-}
-
-html[lang="en"] .is-project-page .vp-doc,
-html[lang="en"] .is-project-page .vp-doc :where(:not(pre, code, kbd, samp, svg, svg *)) {
-  font-family: var(--font-latin) !important;
-}
-
-/* Animation */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+@media (max-width: 599px) {
+  .VPFooter .container { flex-direction: column; align-items: flex-start; }
 }
 
 /* ==========================================================================
-   6. MOBILE NAVIGATION FIXES (CONSOLIDATED)
+   5. MOTION & PRINT
    ========================================================================== */
 
-/* Mobile Nav Screen Defaults - REMOVED to restore default behavior */
-/*
-.VPNavScreen {
-  ...
+@keyframes zbFadeIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-*/
-
-/* Disable Custom Sidebars on Mobile */
-@media (max-width: 768px) {
-
-  /* Ensure Nav Z-Index is highest */
-  .VPNav,
-  .VPNavBar {
-    z-index: 2001 !important;
-  }
-}
-
-/* ==========================================================================
-   7. PRINT & UTILITIES
-   ========================================================================== */
 
 @media print {
-
-  .VPNav,
-  .VPFooter {
-    display: none;
-  }
-}
-
-/* ==========================================================================
-   NAVIGATION BAR ADJUSTMENTS
-   ========================================================================== */
-
-
-/* 限制导航栏最大宽度，使左右两侧内容靠得更近 (仅在宽屏生效) */
-/* 限制导航栏最大宽度：已移除以修复 ViewCounter 被遮挡的问题 */
-/*
-@media (min-width: 1200px) {
-  .VPNavBar .container {
-    max-width: 796px !important;
-    margin: 0 auto !important;
-  }
-}
-*/
-
-/* ==========================================================================
-   COMPACT NAVIGATION (NO HAMBURGER GLOBALLY)
-   ========================================================================== */
-
-/* 1. Globally Hide Hamburger Menu */
-.VPNavBarHamburger {
-  display: none !important;
-}
-
-/* 2. Globally Force Menu & Social Links to Show */
-.VPNavBarMenu,
-.VPNavBarSocialLinks,
-.VPSocialLinks,
-.VPNavBarAppearance {
-  display: flex !important;
-}
-
-/* 3. Responsive Adjustments for Smaller Screens */
-@media (max-width: 959px) {
-
-  /* Adjust container padding */
-  .VPNavBar .container {
-    padding: 0 12px !important;
-  }
-
-  .VPNavBar .content {
-    min-width: 0 !important;
-    padding-left: 8px !important;
-    padding-right: 8px !important;
-  }
-
-  .VPNavBar .content-body {
-    min-width: 0 !important;
-    justify-content: flex-end !important;
-  }
-
-  /* Hide Appearance Toggle on Mobile */
-  .VPNavBarAppearance {
-    display: none !important;
-  }
-
-  .VPNavBarSocialLinks,
-  .VPSocialLinks {
-    display: flex !important;
-    flex: 0 0 auto;
-  }
-
-  .VPNavBarSocialLinks {
-    margin-left: clamp(4px, 1.2vw, 8px) !important;
-    margin-right: 0 !important;
-  }
-
-  .VPSocialLinks {
-    gap: 0 !important;
-  }
-
-  .VPNavBarSocialLinks::before,
-  .VPSocialLinks::before {
-    content: none !important;
-    display: none !important;
-  }
-
-  .VPNavBarSocialLinks .VPSocialLink {
-    width: 28px;
-    height: 28px;
-  }
-
-  /* Hide View Counter to save space - MOVED to mobile only */
-  /*
-  .nav-view-counter {
-    display: none !important;
-  }
-  */
-
-  /* Compact Menu Items Base Styles */
-  .VPNavBarMenu {
-    gap: clamp(8px, 2vw, 18px);
-  }
-
-  .VPNavBarMenuLink {
-    padding: 0 !important;
-  }
-}
-
-/* Tablet / Small Laptop (600px - 959px) */
-@media (max-width: 959px) and (min-width: 600px) {
-  .VPNavBarTitle .title::after {
-    font-size: 24px !important;
-  }
-
-  .VPNavBarMenuLink {
-    font-size: 20px !important;
-  }
-
-  html[lang="zh-CN"] .VPNavBarMenuLink {
-    font-size: 20px !important;
-  }
-}
-
-/* Mobile (Under 600px) */
-@media (max-width: 599px) {
-  .VPNavBar .content {
-    padding-left: 0 !important;
-  }
-
-  .VPNavBarTitle .title::after {
-    content: 'Huo' !important;
-    font-size: 18px !important;
-  }
-
-  .VPNavBarMenu {
-    gap: clamp(6px, 1.6vw, 10px);
-  }
-
-  .VPNavBarMenuLink {
-    font-size: 16px !important;
-    padding: 0 !important;
-  }
-
-  html[lang="zh-CN"] .VPNavBarMenuLink {
-    font-size: 16px !important;
-  }
-
-  .custom-language-link {
-    width: 30px;
-    font-size: 16px !important;
-    margin-left: clamp(6px, 1.6vw, 10px);
-    padding-left: 0 !important;
-  }
-
-  .VPNavBarSocialLinks {
-    margin-left: clamp(3px, 1vw, 6px) !important;
-  }
-
-  .VPNavBarSocialLinks .VPSocialLink {
-    width: 24px;
-    height: 24px;
-  }
-
-  .language-link-zh {
-    font-size: 16px !important;
-  }
-
-  /* Hide View Counter on Mobile Phones only */
-  .nav-view-counter {
-    display: none !important;
-  }
-}
-
-/* ==========================================================================
-   HIDE DEFAULT RETURN TO TOP
-   ========================================================================== */
-
-/* Hide "Return to top" in mobile local nav by default */
-.VPLocalNav .return-to-top {
-  display: none !important;
-}
-
-/* Show "Return to top" on article pages */
-.is-article-page .VPLocalNav .return-to-top {
-  display: block !important;
-}
-
-/* Hide the entire Local Nav bar if it doesn't contain a menu 
-   (This removes the empty bar on non-article pages where menu is absent)
-   We exclude article pages from this rule to ensure the bar stays visible for the return-to-top link
-*/
-:not(.is-article-page) .VPLocalNav:not(:has(.menu)) {
-  display: none !important;
-}
-
-/* Very Small Mobile (Under 380px) */
-@media (max-width: 379px) {
-  .VPNavBarTitle .title::after {
-    content: 'Huo' !important;
-    font-size: 17px !important;
-  }
-
-  .VPNavBar .container {
-    padding: 0 10px !important;
-  }
-
-  .VPNavBar .content {
-    padding-left: 6px !important;
-    padding-right: 4px !important;
-  }
-
-  .VPNavBarMenu {
-    gap: 4px;
-  }
-
-  .VPNavBarMenuLink {
-    font-size: 15px !important;
-    padding: 0 !important;
-  }
-
-  html[lang="zh-CN"] .VPNavBarMenuLink {
-    font-size: 15px !important;
-  }
-
-  .custom-language-link {
-    width: 26px;
-    font-size: 15px !important;
-    margin-left: 4px;
-  }
-
-  .VPNavBarSocialLinks {
-    margin-left: 3px !important;
-  }
-
-  .VPNavBarSocialLinks .VPSocialLink {
-    width: 22px;
-    height: 22px;
-  }
-}
-
-/* ==========================================================================
-   CHINESE FONT WEIGHT
-   ========================================================================== */
-
-html[lang="zh-CN"] body,
-html[lang="zh-CN"] body :where(:not(pre, code, kbd, samp, svg, svg *)),
-html[lang="zh-CN"] .VPNavBarMenuLink,
-html[lang="zh-CN"] .nav-link,
-html[lang="zh-CN"] .custom-language-link,
-html[lang="zh-CN"] .language-link-zh,
-html[lang="zh-CN"] .about-intro strong,
-html[lang="zh-CN"] .about-description strong {
-  font-weight: 400 !important;
-}
-
-.VPNav .VPNavBarMenuLink,
-.VPNav .nav-link,
-.VPNav .custom-language-link {
-  font-weight: 400 !important;
-}
-
-html[lang="zh-CN"] .VPNavBarMenuLink,
-html[lang="zh-CN"] .nav-link,
-html[lang="zh-CN"] .custom-language-link,
-html[lang="zh-CN"] .language-link-zh {
-  font-weight: 400 !important;
-}
-
-.VPNav .VPNavBarMenuLink,
-.VPNav .VPNavBarMenuLink.active,
-.VPNav .custom-language-link {
-  font-synthesis: none !important;
-  font-style: normal !important;
-  font-weight: 400 !important;
-  text-shadow: none !important;
-  -webkit-text-stroke-width: 0 !important;
-}
-
-.VPNav .language-link-en {
-  font-family: var(--font-latin), serif !important;
-}
-
-.VPNav .language-link-zh {
-  font-family: var(--font-zh), serif !important;
-}
-
-.VPNav a.custom-language-link.language-link-zh,
-.VPNavScreen a.nav-screen-language-link.language-link-zh {
-  font-family: var(--font-zh), serif !important;
-  font-weight: 400 !important;
-}
-
-html[lang="zh-CN"] .VPNav .VPNavBarMenuLink,
-html[lang="zh-CN"] .VPNav .VPNavBarMenuLink.active,
-html[lang="zh-CN"] .VPNav .nav-link,
-html[lang="zh-CN"] .VPNav .custom-language-link {
-  font-weight: 400 !important;
-}
-
-html[lang="zh-CN"] .VPNav .language-link-en {
-  font-family: var(--font-latin), serif !important;
-  font-weight: 400 !important;
-}
-
-html[lang="zh-CN"] body .about-intro strong,
-html[lang="zh-CN"] body .about-description strong,
-html[lang="zh-CN"] body .about-contact h3,
-html[lang="zh-CN"] body .copy-status,
-html[lang="zh-CN"] body .contact-note {
-  font-weight: 400 !important;
+  .VPNav, .VPFooter, .VPLocalNav { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
-  *,
-  *::before,
-  *::after {
-    scroll-behavior: auto !important;
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

@@ -220,7 +220,7 @@ const messages = computed(() => props.isZh
 
 const formattedCount = computed(() => {
   if (count.value === null) return '--'
-  return new Intl.NumberFormat(props.isZh ? 'zh-CN' : 'en-US').format(count.value)
+  return new Intl.NumberFormat(props.isZh ? 'zh-Hant' : 'en-US').format(count.value)
 })
 
 const errorMessage = computed(() => {

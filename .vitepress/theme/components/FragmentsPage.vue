@@ -1,5 +1,5 @@
 <template>
-  <div class="fragments-page">
+  <div class="fragments-page zb-page">
     <header class="fragments-header">
       <h1>{{ isZh ? '片段' : 'Fragments' }}</h1>
       <p>
@@ -113,7 +113,7 @@ type FragmentItem = {
 }
 
 const { frontmatter, page, site } = useData()
-const isZh = computed(() => site.value.lang === 'zh-CN' || page.value.relativePath.startsWith('zh/'))
+const isZh = computed(() => site.value.lang === 'zh-Hant' || page.value.relativePath.startsWith('zh/'))
 const fragments = computed<FragmentItem[]>(() => Array.isArray(frontmatter.value.fragments)
   ? frontmatter.value.fragments
   : [])
@@ -142,7 +142,7 @@ function formatDate(value: string) {
   const date = new Date(value)
   if (Number.isNaN(date.getTime())) return value
 
-  return new Intl.DateTimeFormat(isZh.value ? 'zh-CN' : 'en-US', {
+  return new Intl.DateTimeFormat(isZh.value ? 'zh-Hant' : 'en-US', {
     year: 'numeric',
     month: 'short',
     day: 'numeric'
@@ -159,203 +159,182 @@ function resolveLink(url: string) {
 </script>
 
 <style scoped>
-.fragments-page {
-  max-width: var(--content-max-width);
-  margin: 0 auto;
-  padding: 56px 15px 72px;
-}
+.fragments-page { color: var(--ink); }
 
 .fragments-header {
-  margin-bottom: 42px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 3rem;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule-strong);
 }
 
 .fragments-header h1 {
-  margin: 0 0 14px;
-  color: var(--vp-c-text-1);
-  font-size: 42px;
+  margin: 1.5rem 0 0;
+  font-size: clamp(44px, 5.8vw, 76px);
   font-weight: 400;
-  line-height: 1.15;
-  text-align: left;
+  line-height: 1.2;
+  letter-spacing: 0;
 }
 
 .fragments-header p {
-  max-width: 560px;
-  margin: 0;
-  color: var(--vp-c-text-2);
-  font-size: 17px;
-  line-height: 1.65;
+  margin: 0 0 6px;
+  color: var(--muted);
+  font-size: 1.1rem;
 }
 
 .fragment-list {
-  column-count: 2;
-  column-gap: 20px;
+  columns: 2 300px;
+  column-gap: 22px;
 }
 
 .fragment-item {
-  display: inline-block;
-  width: 100%;
-  min-width: 0;
-  margin: 0 0 20px;
-  padding: 18px;
-  border: 1px solid var(--vp-c-divider);
-  border-radius: 14px;
-  background: var(--vp-c-bg);
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  margin-bottom: 26px;
+  padding: 18px 18px 20px;
   break-inside: avoid;
-  vertical-align: top;
+  background: var(--paper-card);
+  box-shadow: var(--card-shadow);
+  transition: transform 0.3s ease;
 }
 
-.fragment-item img {
-  display: block;
-  width: 100%;
-  margin: 12px 0 16px;
-  border-radius: 10px;
-}
+.fragment-item:nth-child(3n + 1) { transform: rotate(-0.8deg); }
+.fragment-item:nth-child(3n + 2) { transform: rotate(0.6deg); }
+.fragment-item:nth-child(3n) { transform: rotate(-0.3deg); }
+.fragment-item:hover { transform: rotate(0deg); }
 
 .fragment-meta {
   display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  color: var(--vp-c-text-3);
-  font-size: 13px;
+  min-height: 2.2rem;
+  align-items: center;
+  padding: 0 8px;
+  border: 1px solid #9e9f93;
+  color: var(--muted);
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
 }
 
 .fragment-visual {
   display: flex;
-  min-height: 150px;
-  margin: 14px 0 16px;
-  padding: 18px;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  border-radius: 10px;
-  background: linear-gradient(135deg, var(--vp-c-bg-soft), var(--vp-c-bg-mute));
+  gap: 0.4rem;
+  padding: 1.25rem 0;
+  background: var(--paper-soft);
+  font-size: 3rem;
+  line-height: 1;
 }
 
-.fragment-visual span {
-  font-size: 42px;
-  filter: grayscale(1);
-}
+.fragment-visual small { color: var(--muted); font-size: 0.875rem; }
 
-.fragment-visual small {
-  margin-top: 10px;
-  color: var(--vp-c-text-3);
-  font-size: 12px;
+.fragment-item img {
+  width: 100%;
+  height: auto;
+  border: 6px solid var(--paper);
+  box-shadow: 0 1px 3px rgb(57 67 55 / 12%);
 }
 
 .fragment-item h2 {
-  margin: 12px 0 8px;
-  color: var(--vp-c-text-1);
-  font-size: 20px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 1.3rem;
   font-weight: 400;
-  line-height: 1.4;
-  text-align: left;
+  line-height: 1.5;
+  letter-spacing: 0;
 }
 
 .fragment-item p {
-  margin: 12px 0 0;
-  color: var(--vp-c-text-2);
-  font-size: 16px;
-  line-height: 1.65;
+  margin: 0;
+  color: var(--ink-2);
+  font-size: 1rem;
+  line-height: 1.8;
 }
 
-.fragment-status {
+.fragment-item .fragment-status {
   display: flex;
   align-items: center;
-  gap: 7px;
-  color: var(--vp-c-text-3) !important;
-  font-size: 13px !important;
+  gap: 0.5rem;
+  color: var(--marker-deep);
+  font-size: 0.875rem;
 }
 
 .fragment-status span {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--vp-c-text-2);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--vp-c-text-1) 10%, transparent);
+  background: var(--marker);
 }
 
 .fragment-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 7px;
-  margin: 14px 0 0;
+  gap: 0.4rem;
+  margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .fragment-tags li {
   margin: 0;
-  padding: 2px 8px;
+  padding: 0.1rem 0.55rem;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--vp-c-text-1) 6%, transparent);
-  color: var(--vp-c-text-3);
-  font-size: 12px;
+  background: var(--marker-soft);
+  color: var(--ink-2);
+  font-size: 0.8125rem;
 }
 
 .fragment-item a {
-  display: inline-block;
-  margin-top: 14px;
-  color: var(--vp-c-text-1) !important;
-  font-size: 14px;
+  align-self: flex-start;
+  color: var(--ink);
+  font-size: 0.9375rem;
   text-decoration: underline;
-  text-underline-offset: 3px;
+  text-decoration-color: var(--marker);
+  text-underline-offset: 4px;
 }
 
-.fragment-item a:hover {
-  color: var(--vp-c-text-2) !important;
-}
+.fragment-item a:hover { color: var(--marker-deep); }
 
 .fragments-empty {
-  padding-top: 22px;
-  border-top: 1px solid var(--vp-c-divider);
+  padding: 28px 30px;
+  background: var(--paper-card);
+  box-shadow: var(--card-shadow);
+  transform: rotate(-0.5deg);
 }
 
-.fragments-empty p {
-  margin: 0 0 14px;
-  color: var(--vp-c-text-1);
-  font-size: 17px;
-}
+.fragments-empty p { margin: 0 0 1rem; color: var(--muted); }
 
 .fragments-empty ul {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px 32px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .fragments-empty li {
-  position: relative;
   margin: 0;
-  padding-left: 16px;
-  color: var(--vp-c-text-2);
-  font-size: 16px;
-  line-height: 1.6;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: 1.05rem;
 }
 
 .fragments-empty li::before {
-  position: absolute;
-  left: 0;
-  content: '·';
+  margin-right: 0.6rem;
+  color: var(--marker);
+  content: '—';
 }
 
-@media (max-width: 768px) {
-  .fragments-page {
-    padding: 40px 7.5px 56px;
-  }
-
-  .fragments-header h1 {
-    font-size: 36px;
-  }
-
-  .fragment-list {
-    column-count: 1;
-  }
-
-  .fragments-empty ul {
-    grid-template-columns: 1fr;
-  }
+@media (max-width: 767px) {
+  .fragments-header { display: block; }
+  .fragments-header p { margin-top: 0.75rem; }
+  .fragment-list { columns: 1; }
+  .fragment-item:nth-child(n),
+  .fragments-empty { transform: none; }
 }
 </style>

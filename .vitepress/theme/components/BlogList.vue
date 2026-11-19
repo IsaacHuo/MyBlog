@@ -1,5 +1,13 @@
 <template>
-  <div class="blog-list-page">
+  <div class="blog-list-page zb-page">
+    <header class="zb-page-head">
+      <div class="zb-label">
+        <span>{{ isZh ? '文章' : 'Writing' }}</span>
+        <span>{{ filteredPosts.length }} {{ isZh ? '篇' : 'posts' }}</span>
+      </div>
+      <h1>{{ isZh ? '想清楚，再动手。' : 'Think it through, then build.' }}</h1>
+      <p>{{ isZh ? '技术笔记、产品思考与生活随想。' : 'Tech notes, product thinking and essays.' }}</p>
+    </header>
     <nav
       class="blog-tabs"
       :aria-label="isZh ? '文章分类' : 'Post categories'"
@@ -115,7 +123,7 @@ type BlogPost = { url: string; frontmatter: Record<string, any> }
 const activeTab = ref<'tech' | 'life'>('tech')
 
 const isZh = computed(() => {
-  return site.value.lang === 'zh-CN' || page.value.relativePath.startsWith('zh/')
+  return site.value.lang === 'zh-Hant' || page.value.relativePath.startsWith('zh/')
 })
 
 const filteredPosts = computed(() => {
@@ -170,7 +178,7 @@ function formatDate(value?: string) {
   if (!value) return ''
 
   try {
-    return new Intl.DateTimeFormat(isZh.value ? 'zh-CN' : 'en-US', {
+    return new Intl.DateTimeFormat(isZh.value ? 'zh-Hant' : 'en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric'
@@ -183,129 +191,102 @@ function formatDate(value?: string) {
 
 <style scoped>
 .blog-list-page {
-  max-width: var(--content-max-width);
-  margin: 0 auto;
-  padding: 30px 15px;
-  text-align: left;
+  color: var(--ink);
 }
 
 .blog-tabs {
   display: none;
   align-items: center;
-  justify-content: center;
-  gap: 0;
-  margin-bottom: 40px;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
 }
+
+.tab-btn {
+  padding: 0.35rem 1rem;
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.tab-btn.active {
+  border-color: var(--marker);
+  background: var(--marker-soft);
+  color: var(--ink);
+}
+
+.tab-btn:focus-visible { outline: 2px solid var(--site-focus-ring); outline-offset: 2px; }
+
+.tab-divider { color: var(--faint); }
 
 .blog-columns {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 48px;
-}
-
-.blog-column {
-  min-width: 0;
+  gap: 4rem;
 }
 
 .column-title {
-  margin: 0 0 28px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--vp-c-divider);
-  color: var(--vp-c-text-1);
-  font-size: 22px;
+  display: flex;
+  justify-content: space-between;
+  margin: 0 0 0.5rem;
+  padding: 14px 0 0;
+  border-top: 1px solid var(--rule-strong);
+  color: var(--muted);
+  font-size: 0.9375rem;
   font-weight: 400;
-  line-height: 1.4;
-}
-
-.tab-btn {
-  background: none;
-  border: none;
-  font-size: 18px;
-  font-family: inherit;
-  color: var(--vp-c-text-3);
-  cursor: pointer;
-  padding: 6px 16px;
-  transition: color 0.2s;
-}
-
-.tab-btn:hover {
-  color: var(--vp-c-text-1);
-}
-
-.tab-btn.active {
-  color: var(--vp-c-text-1);
-  font-weight: 600;
-}
-
-.tab-divider {
-  color: var(--vp-c-border);
-  font-size: 18px;
-  user-select: none;
+  letter-spacing: 0.08em;
+  line-height: 1.6;
 }
 
 .post-list {
-  list-style: none;
   margin: 0;
   padding: 0;
-  text-align: left;
+  list-style: none;
 }
 
 .post-list-item {
-  margin-bottom: 28px;
+  display: grid;
+  gap: 0.35rem;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--rule);
+  transition: padding 0.25s ease;
 }
+
+.post-list-item:hover { padding-left: 10px; }
 
 .post-meta {
   display: flex;
-  align-items: baseline;
-  gap: 8px;
-  margin-bottom: 2px;
-  color: var(--vp-c-text-3);
-  font-size: 14px;
-  line-height: 1.5;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--faint);
+  font-size: 0.875rem;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
 }
 
-.post-meta :deep(.view-count) {
-  font-size: 14px;
-  margin-top: 0;
-}
+.inline-vc { color: var(--faint); font-size: 0.875rem; }
 
 .post-link {
-  display: block;
-  color: #4d74eb !important;
-  font-size: 21px;
-  line-height: 1.35;
+  color: var(--ink);
+  font-size: 1.35rem;
+  line-height: 1.55;
   text-decoration: none;
+  transition: color 0.2s ease;
 }
 
-.post-link:hover {
-  color: var(--vp-c-text-1) !important;
-  text-decoration: underline;
-}
+.post-link:hover { color: var(--marker-deep); }
 
-@media (max-width: 800px) {
-  .blog-list-page {
-    padding-right: 7.5px;
-    padding-left: 7.5px;
-  }
+.post-link:focus-visible { outline: 2px solid var(--site-focus-ring); outline-offset: 3px; }
 
-  .blog-tabs {
-    display: flex;
-  }
-
-  .blog-columns {
-    display: block;
-  }
-
-  .blog-column.mobile-hidden {
-    display: none;
-  }
-
-  .column-title {
-    display: none;
-  }
-
-  .post-link {
-    font-size: 24px;
-  }
+@media (max-width: 767px) {
+  .blog-tabs { display: flex; }
+  .blog-columns { grid-template-columns: 1fr; gap: 0; }
+  .blog-column.mobile-hidden { display: none; }
+  .column-title { display: none; }
+  .post-link { font-size: 1.2rem; }
 }
 </style>

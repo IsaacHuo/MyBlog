@@ -60,7 +60,7 @@ const isChinese = computed(() => {
   return /^zh(?:-|$)/i.test(lang.value) || page.value.relativePath.startsWith('zh/')
 })
 
-const giscusLang = computed(() => isChinese.value ? 'zh-CN' : 'en')
+const giscusLang = computed(() => isChinese.value ? 'zh-TW' : 'en')
 const giscusTheme = computed(() => isDark.value ? 'dark' : 'light')
 const messages = computed(() => isChinese.value
   ? {

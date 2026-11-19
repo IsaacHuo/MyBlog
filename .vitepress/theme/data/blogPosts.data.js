@@ -1,4 +1,5 @@
 import { createContentLoader } from 'vitepress'
+import { toHantDeep } from '../../zh-hant.mjs'
 
 const loader = createContentLoader(['zh/blog/*.md', 'en/blog/*.md'], {
   includeSrc: false,
@@ -16,7 +17,8 @@ const loader = createContentLoader(['zh/blog/*.md', 'en/blog/*.md'], {
       })
       .map(({ url, frontmatter }) => ({
         url,
-        frontmatter
+        // Chinese pages render in Traditional; keep list titles consistent.
+        frontmatter: url.startsWith('/zh/') ? toHantDeep(frontmatter) : frontmatter
       }))
       .sort((a, b) => {
         return +new Date(b.frontmatter.date) - +new Date(a.frontmatter.date)
